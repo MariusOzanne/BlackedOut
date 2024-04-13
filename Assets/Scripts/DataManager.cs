@@ -9,10 +9,10 @@ public class DataManager
         CreateScriptableObject<ItemsData>("ItemData", "Items");
     }
 
-    [MenuItem("Blacked Out/Create Monster Data")]
-    public static void CreateMonster()
+    [MenuItem("Blacked Out/Create Enemy Data")]
+    public static void CreateEnnemies()
     {
-        CreateScriptableObject<MonstersData>("MonsterData", "Monsters");
+        CreateScriptableObject<EnemyData>("EnemyData", "Ennemies");
     }
 
     private static void CreateScriptableObject<T>(string fileName, string folderName) where T : ScriptableObject
@@ -21,7 +21,7 @@ public class DataManager
         T newObject = ScriptableObject.CreateInstance<T>();
 
         // Crée le ScriptableObject en suivant le chemin spécifié
-        string path = $"Assets/Scripts/ScriptableObjects/{folderName}";
+        string path = $"Assets/ScriptableObjects/{folderName}";
         string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath($"{path}/{fileName}.asset");
         AssetDatabase.CreateAsset(newObject, assetPathAndName);
         AssetDatabase.SaveAssets();

@@ -5,33 +5,71 @@ using UnityEngine.UI;
 
 public class PortalController : MonoBehaviour
 {
-    [Header("Ennemis spawnnant du portail")]
-    [SerializeField] private List<MonstersData> enemyTypes;
-    [Header("Frequence d'apparition des ennemis")]
-    [SerializeField] private float spawnInterval;
-    private float nextSpawnTime;
+    #region Variable setup
+
+    [Header("Choix des ennemis apparaissant du portail")]
+    [SerializeField] private List<EnemyData> enemyTypes;
+    [Header("Vie du portail")]
+    [SerializeField] private float portalHealth ;
+    [Header("Setup des vagues")]
+    [SerializeField] private int enemiesPerWave; // Nombre d'ennemis par vague
+    [SerializeField] private float spawnInterval; // Intervalle entre les apparitions d'ennemis
+    [SerializeField] private float waveInterval; // Intervalle entre les vagues
+    [Header("UI")]
+    [SerializeField] private Slider healthSlider;
+    #endregion
+
+    private float currentHealth;
+    private float nextWaveTime;
+    private int enemiesSpawned;
 
     void Start()
     {
-        nextSpawnTime = Time.time + spawnInterval;
+        currentHealth = portalHealth;
+        UpdateHealthBar();
+        nextWaveTime = Time.time + waveInterval;
     }
 
     void Update()
     {
-        if (Time.time >= nextSpawnTime)
+        if (Time.time >= nextWaveTime)
         {
-            SpawnEnemy();
-            nextSpawnTime = Time.time + spawnInterval;
+            StartCoroutine(SpawnWave());
+            nextWaveTime = Time.time + waveInterval;
         }
     }
 
-    void SpawnEnemy()
+    IEnumerator SpawnWave()
     {
-        if (enemyTypes.Count == 0)
-            return;
+        enemiesSpawned = 0;
+        while (enemiesSpawned < enemiesPerWave)
+        {
+            // Choix aléatoire de type d'ennemi dans la liste enemyTypes
+            int randomIndex = Random.Range(0, enemyTypes.Count);
+            EnemyData enemyData = enemyTypes[randomIndex];
 
-        int randomIndex = Random.Range(0, enemyTypes.Count);
-        GameObject enemyPrefab = enemyTypes[randomIndex].monsterPrefab;
-        Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+            // Faire apparaître l'ennemi correspondant au type choisi
+            GameObject enemyPrefab = enemyData.enemyPrefab;
+            Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+
+            enemiesSpawned++;
+            yield return new WaitForSeconds(spawnInterval);
+        }
+    }
+
+    void UpdateHealthBar()
+    {
+        float healthRatio = currentHealth / portalHealth;
+        healthSlider.value = healthRatio;
+    }
+
+    public void TakeDamage(float damage)
+    {
+        currentHealth -= damage;
+        UpdateHealthBar();
+        if (currentHealth <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
