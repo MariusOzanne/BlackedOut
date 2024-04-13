@@ -61,7 +61,8 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        rb.velocity = new Vector3(moveDirection.x * speed, rb.velocity.y, moveDirection.z * speed);
+        float yVelocity = rb.velocity.y;
+        rb.velocity = new Vector3(moveDirection.x * speed, yVelocity, moveDirection.z * speed);
 
         // Si le joueur se déplace, active l'animation de marche
         if (moveDirection.magnitude > 0)
@@ -94,28 +95,24 @@ public class PlayerController : MonoBehaviour
     {
         if (projectilePrefab && projectileSpawnPoint)
         {
-
-            // Instancie le projectile au point de départ qui devrait être approximativement à la tête du joueur
-            GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, Quaternion.Euler(0, lastYRotation, 0));
+            // Instancie le projectile au point de départ avec la rotation du projectileSpawnPoint
+            GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
 
             // Obtient le Rigidbody du projectile
             Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
 
             if (projectileRb != null)
             {
-                // Désactive la gravité
+                // Désactive la gravité pour le projectile
                 projectileRb.useGravity = false;
 
-                // Utilise la rotation du projectileSpawnPoint pour déterminer la direction du tir
+                // Utilise la direction vers l'avant du projectileSpawnPoint pour la force
                 Vector3 fireDirection = projectileSpawnPoint.forward;
 
                 // Applique une force au projectile dans la direction calculée
                 projectileRb.AddForce(fireDirection.normalized * 1000);
 
-                // Empêche les collisions entre le joueur et les projectiles
-                Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
-
-                // Détruit le projectile après 3 secondes
+                // Détruit le projectile après un certain temps
                 Destroy(projectile, 1.5f);
             }
         }
