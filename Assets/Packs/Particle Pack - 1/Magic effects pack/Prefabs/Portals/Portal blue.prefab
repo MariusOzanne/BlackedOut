@@ -33,8 +33,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -0.0000038147, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2684201011376506634
 GameObject:
@@ -70,8 +70,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 4.987, y: 0}
-  m_SizeDelta: {x: 19.972, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0.0000019073, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &334943729269611781
 CanvasRenderer:
@@ -9981,11 +9981,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f715ec7669e602f41a8e58c6cc4db0d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyTypes: []
-  portalHealth: 0
-  enemiesPerWave: 0
-  spawnInterval: 0
-  waveInterval: 0
+  enemyTypes:
+  - {fileID: 11400000, guid: aec98b4b9f6920d43b158419dfc5007e, type: 2}
+  portalHealth: 100
+  enemiesPerWave: 3
+  spawnInterval: 1
+  waveInterval: 10
   healthSlider: {fileID: 7709469637664816226}
 --- !u!1 &5995944143312657410
 GameObject:
