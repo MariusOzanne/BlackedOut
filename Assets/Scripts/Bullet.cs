@@ -6,6 +6,18 @@ public class Bullet : MonoBehaviour
 {
     [SerializeField] private int damage;
 
+    private float fixedYPosition;
+
+    private void Start()
+    {
+        fixedYPosition = transform.position.y;
+    }
+
+    private void Update()
+    {
+        transform.position = new Vector3(transform.position.x, fixedYPosition, transform.position.z);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))

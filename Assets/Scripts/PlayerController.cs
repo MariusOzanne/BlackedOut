@@ -94,8 +94,9 @@ public class PlayerController : MonoBehaviour
     {
         if (bulletPrefab && bulletSpawnPoint)
         {
-            // Instancie la balle au point de départ avec la rotation du projectileSpawnPoint
-            GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
+            // Instancie la balle au point de départ avec la rotation ajustée de 90 degrés en X
+            Quaternion bulletRotation = Quaternion.Euler(90, lastYRotation, 0);
+            GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletRotation);
 
             // Obtient le Rigidbody de la balle
             Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
@@ -105,8 +106,8 @@ public class PlayerController : MonoBehaviour
                 // Désactive la gravité pour la balle
                 bulletRb.useGravity = false;
 
-                // Utilise la direction vers l'avant du bulletSpawnPoint pour la force
-                Vector3 fireDirection = bulletSpawnPoint.forward;
+                // Utilise la direction avant de la balle pour la force
+                Vector3 fireDirection = bullet.transform.up;
 
                 // Applique une force à la balle dans la direction calculée
                 bulletRb.AddForce(fireDirection.normalized * 1000);
