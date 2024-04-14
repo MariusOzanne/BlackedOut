@@ -6,7 +6,8 @@ public class EnemyData : ScriptableObject
 {
     [Header("Statistiques")]
     public string enemyName;
-    public int health;
+    public int maxHealth; 
+    public int health; 
     public float speed;
     public int damage;
     public float attackCooldown;

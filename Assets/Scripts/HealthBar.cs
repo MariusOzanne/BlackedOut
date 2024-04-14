@@ -8,10 +8,10 @@ public class HealthBar : MonoBehaviour
     #region Variables & Composants vie joueur
 
     [Header("Variables & Composants Vie joueur")]
-    public int maxHealth;                   
-    public Slider lifeBar;
-    public Gradient gradient;
-    public Image fill;
+    [SerializeField] private int maxHealth;                   
+    [SerializeField] private Slider lifeBar;
+    [SerializeField] private Gradient gradient;
+    [SerializeField] private Image fill;
 
     #endregion
 
