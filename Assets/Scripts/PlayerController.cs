@@ -6,8 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Joystick movementJoystick;
     [SerializeField] private Joystick rotationJoystick;
-    [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private Transform projectileSpawnPoint;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform bulletSpawnPoint;
 
     [SerializeField] private float speed;
     [SerializeField] private float fireThreshold;
@@ -61,8 +61,7 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        float yVelocity = rb.velocity.y;
-        rb.velocity = new Vector3(moveDirection.x * speed, yVelocity, moveDirection.z * speed);
+        rb.velocity = new Vector3(moveDirection.x * speed, rb.velocity.y, moveDirection.z * speed);
 
         // Si le joueur se déplace, active l'animation de marche
         if (moveDirection.magnitude > 0)
@@ -86,34 +85,34 @@ public class PlayerController : MonoBehaviour
 
         if (distanceFromCenter > fireThreshold && Time.time > lastFireTime + fireRate)
         {
-            FireProjectile();
+            FireBullet();
             lastFireTime = Time.time; // Mise à jour du temps pour le dernier tir
         }
     }
 
-    private void FireProjectile()
+    private void FireBullet()
     {
-        if (projectilePrefab && projectileSpawnPoint)
+        if (bulletPrefab && bulletSpawnPoint)
         {
-            // Instancie le projectile au point de départ avec la rotation du projectileSpawnPoint
-            GameObject projectile = Instantiate(projectilePrefab, projectileSpawnPoint.position, projectileSpawnPoint.rotation);
+            // Instancie la balle au point de départ avec la rotation du projectileSpawnPoint
+            GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletSpawnPoint.rotation);
 
-            // Obtient le Rigidbody du projectile
-            Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+            // Obtient le Rigidbody de la balle
+            Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
 
-            if (projectileRb != null)
+            if (bulletRb != null)
             {
-                // Désactive la gravité pour le projectile
-                projectileRb.useGravity = false;
+                // Désactive la gravité pour la balle
+                bulletRb.useGravity = false;
 
-                // Utilise la direction vers l'avant du projectileSpawnPoint pour la force
-                Vector3 fireDirection = projectileSpawnPoint.forward;
+                // Utilise la direction vers l'avant du bulletSpawnPoint pour la force
+                Vector3 fireDirection = bulletSpawnPoint.forward;
 
-                // Applique une force au projectile dans la direction calculée
-                projectileRb.AddForce(fireDirection.normalized * 1000);
+                // Applique une force à la balle dans la direction calculée
+                bulletRb.AddForce(fireDirection.normalized * 1000);
 
-                // Détruit le projectile après un certain temps
-                Destroy(projectile, 1.5f);
+                // Détruit la balle après un certain temps
+                Destroy(bullet, 5f);
             }
         }
     }

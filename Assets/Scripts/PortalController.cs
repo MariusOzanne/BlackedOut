@@ -10,7 +10,7 @@ public class PortalController : MonoBehaviour
     [Header("Choix des ennemis apparaissant du portail")]
     [SerializeField] private List<EnemyData> enemyTypes;
     [Header("Vie du portail")]
-    [SerializeField] private float portalHealth ;
+    [SerializeField] private float portalHealth;
     [Header("Setup des vagues")]
     [SerializeField] private int enemiesPerWave; // Nombre d'ennemis par vague
     [SerializeField] private float spawnInterval; // Intervalle entre les apparitions d'ennemis
@@ -50,7 +50,15 @@ public class PortalController : MonoBehaviour
 
             // Faire apparaître l'ennemi correspondant au type choisi
             GameObject enemyPrefab = enemyData.enemyPrefab;
-            Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+            GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+
+            newEnemy.tag = "Enemy";
+
+            CapsuleCollider enemyCollider = newEnemy.GetComponent<CapsuleCollider>();
+            if (enemyCollider != null)
+            {
+                enemyCollider.isTrigger = true;
+            }
 
             enemiesSpawned++;
             yield return new WaitForSeconds(spawnInterval);

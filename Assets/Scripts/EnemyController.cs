@@ -85,10 +85,9 @@ public class EnemyController : MonoBehaviour
         GameManager.Instance.life -= enemyData.damage;
     }
 
-    public void TakeDamage()
+    public void TakeDamage(int damage)
     {
-        // Degats des balles a faire ici
-        //enemyData.health -= ;
+        enemyData.health -= damage;
         if (enemyData.health <= 0)
         {
             StartCoroutine(Die());
