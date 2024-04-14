@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,45 +11,53 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private GameObject attackZone; // Zone de détection d'attaque
 
     private Transform player;
-    //private Animator animator;
     private NavMeshAgent navMeshAgent;
     private float nextAttackTime;
     private bool playerInAttackRange;
+    private Animation anim;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         navMeshAgent = GetComponent<NavMeshAgent>();
-        //animator = GetComponent<Animator>();
         navMeshAgent.speed = enemyData.speed;
         playerInAttackRange = false;
+        anim = GetComponent<Animation>();
     }
 
     void Update()
     {
-        // Si le joueur est dans la zone de détection de déplacement, se dirige vers le joueur
-
+        // Si le joueur est dans la zone de détection de déplacement
         if (detectionZone.GetComponent<Collider>().bounds.Contains(player.position))
         {
-            navMeshAgent.SetDestination(player.position);
-            //animator.SetBool("isWalking", true);
-        }
-        //else
-        //{
-        //    animator.SetBool("isWalking", false); 
-        //}
+            // Jouer l'animation de déplacement
+            anim.CrossFade("move_forward");
 
-        // Si le joueur est dans la zone d'attaque et l'ennemi peut attaquer
-        if (attackZone.GetComponent<Collider>().bounds.Contains(player.position) && Time.time >= nextAttackTime)
-        {
-            Attack();
-            nextAttackTime = Time.time + enemyData.attackCooldown;
-        }
+            // Si le joueur est dans la zone d'attaque
+            if (attackZone.GetComponent<Collider>().bounds.Contains(player.position))
+            {
+                // Arrête le mouvement de l'ennemi
+                navMeshAgent.isStopped = true;
+                // Jouer l'animation d'attaque
+                anim.CrossFade("attack_short_001");
+                anim.Stop("move_forward");
 
-        // Si le joueur n'est pas dans la zone d'attaque mais dans la zone de déplacement, se rapproche du joueur
-        if (!playerInAttackRange && detectionZone.GetComponent<Collider>().bounds.Contains(player.position))
-        {
-            navMeshAgent.SetDestination(player.position);
+                // Attaque
+                if (Time.time >= nextAttackTime)
+                {
+                    Attack();
+                    nextAttackTime = Time.time + enemyData.attackCooldown;
+                }
+            }
+            else
+            {
+                // Reprend le mouvement vers le joueur
+                navMeshAgent.isStopped = false;
+                navMeshAgent.SetDestination(player.position);
+
+                // Jouer l'animation de déplacement
+                anim.CrossFade("move_forward");
+            }
         }
     }
 
@@ -60,7 +67,6 @@ public class EnemyController : MonoBehaviour
         if (other.CompareTag("Player") && other.gameObject == attackZone)
         {
             playerInAttackRange = true;
-            //animator.SetTrigger("Attack");
         }
     }
 
@@ -75,22 +81,27 @@ public class EnemyController : MonoBehaviour
 
     void Attack()
     {
+        // Appliquer les dégâts au joueur
         GameManager.Instance.life -= enemyData.damage;
     }
 
     public void TakeDamage()
     {
-        
+        // Degats des balles a faire ici
         //enemyData.health -= ;
         if (enemyData.health <= 0)
         {
-            //animator.SetTrigger("Die");
             StartCoroutine(Die());
         }
     }
 
     IEnumerator Die()
     {
+        // Jouer l'animation de mort
+        anim.Stop("attack_short_001");
+        anim.Stop("move_forward");
+        anim.CrossFade("dead");
+
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
     }
