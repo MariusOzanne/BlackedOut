@@ -5,34 +5,63 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    #region Variables & Composants vie joueur
-
-    [Header("Variables & Composants Vie joueur")]
-    [SerializeField] private int maxHealth;                   
+    [Header("Configuration de la barre de vie")]
+    [SerializeField] private bool isPlayer;
     [SerializeField] private Slider lifeBar;
     [SerializeField] private Gradient gradient;
-    [SerializeField] private Image fill;
 
-    #endregion
+    private Image fill;
+    private int maxHealth;
 
-    private EnemyData enemyData;
-
-    private void Start()
+    void Start()
     {
-        // Définir la vie du joueur
-        maxHealth = GameManager.Instance.life;
-        lifeBar.maxValue = maxHealth;
+        if (lifeBar == null)
+        {
+            Debug.LogError("Slider lifeBar n'est pas assigné sur " + gameObject.name);
+            return;
+        }
 
-        // On évalue à quel niveau ce trouve la couleur (1 étant la couleur verte car les HP sont au max)
-        fill.color = gradient.Evaluate(1f);
+        // Recherche de l'Image du Fill dynamiquement
+        fill = lifeBar.fillRect.GetComponent<Image>();
+        if (fill == null)
+        {
+            Debug.LogError("Image fill n'est pas trouvée sur le Slider " + gameObject.name);
+            return;
+        }
 
+        // Configuration initiale de la barre de vie
+        SetupHealthBar();
     }
 
-    private void Update()
+    private void SetupHealthBar()
     {
-        // Mise à jour de la barre de vie
-        lifeBar.value = GameManager.Instance.life;
-        // Mise à jour du dégradé de couleur en fonction de la vie qui reste au joueur
+        if (isPlayer)
+        {
+            maxHealth = GameManager.Instance.life;
+        }
+        else
+        {
+            EnemyData enemyData = GetComponentInParent<EnemyController>()?.enemyData;
+            if (enemyData != null)
+            {
+                maxHealth = enemyData.maxHealth;
+            }
+            else
+            {
+                Debug.LogError("EnemyData non trouvé sur " + gameObject.name);
+                return;
+            }
+        }
+
+        lifeBar.maxValue = maxHealth;
+        lifeBar.value = maxHealth;
+        fill.color = gradient.Evaluate(1f);
+    }
+
+    void Update()
+    {
+        int currentHealth = isPlayer ? GameManager.Instance.life : GetComponentInParent<EnemyController>()?.enemyData.health ?? 0;
+        lifeBar.value = currentHealth;
         fill.color = gradient.Evaluate(lifeBar.normalizedValue);
     }
 }

@@ -15735,7 +15735,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -32113,7 +32113,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.15000153, y: 0}
+  m_AnchoredPosition: {x: -0.15000153, y: 0}
   m_SizeDelta: {x: 0.062, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2785463442873201648
@@ -32319,6 +32319,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6071863972438753634}
   - component: {fileID: 6839781312083341995}
+  - component: {fileID: 3427088429495955266}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -32391,7 +32392,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8247957688982809734}
   m_FillRect: {fileID: 4101630201055588448}
   m_HandleRect: {fileID: 6197736823094600917}
-  m_Direction: 0
+  m_Direction: 1
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
@@ -32399,6 +32400,50 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3427088429495955266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7479095228737063218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef4e59745d7d095489929d7f91cb47c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayer: 0
+  lifeBar: {fileID: 6839781312083341995}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.105882354, b: 0, a: 1}
+    key1: {r: 0.9529412, g: 1, b: 0, a: 1}
+    key2: {r: 0.08235294, g: 1, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 21823
+    ctime1: 43712
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 1
+    m_ColorSpace: -1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
 --- !u!1 &8154562737710607100
 GameObject:
   m_ObjectHideFlags: 0

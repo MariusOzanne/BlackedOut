@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Skeleton
   m_EditorClassIdentifier: 
   enemyName: Skeleton
-  health: 50
+  maxHealth: 100
+  health: 100
   speed: 5
   damage: 2
   attackCooldown: 2

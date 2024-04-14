@@ -5,7 +5,7 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour
 {
     [Header("Stats de l'ennemi")]
-    [SerializeField] private EnemyData enemyData;
+    public EnemyData enemyData;
     [Header("Zone de detection de l'ennemi")]
     [SerializeField] private GameObject detectionZone; // Zone de détection de déplacement
     [SerializeField] private GameObject attackZone; // Zone de détection d'attaque
@@ -15,32 +15,39 @@ public class EnemyController : MonoBehaviour
     private float nextAttackTime;
     private bool playerInAttackRange;
     private Animation anim;
+    private bool isDead = false;
 
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = enemyData.speed;
-        playerInAttackRange = false;
         anim = GetComponent<Animation>();
     }
 
     void Update()
     {
+        if (isDead)
+            return;
+
         // Si le joueur est dans la zone de détection de déplacement
         if (detectionZone.GetComponent<Collider>().bounds.Contains(player.position))
         {
-            // Jouer l'animation de déplacement
-            anim.CrossFade("move_forward");
+            if (!playerInAttackRange)
+                // Jouer l'animation de déplacement
+                anim.CrossFade("move_forward");
 
             // Si le joueur est dans la zone d'attaque
             if (attackZone.GetComponent<Collider>().bounds.Contains(player.position))
             {
                 // Arrête le mouvement de l'ennemi
                 navMeshAgent.isStopped = true;
-                // Jouer l'animation d'attaque
-                anim.CrossFade("attack_short_001");
-                anim.Stop("move_forward");
+                if (!playerInAttackRange)
+                {
+                    // Jouer l'animation d'attaque
+                    anim.CrossFade("attack_short_001");
+                    playerInAttackRange = true;
+                }
 
                 // Attaque
                 if (Time.time >= nextAttackTime)
@@ -54,9 +61,7 @@ public class EnemyController : MonoBehaviour
                 // Reprend le mouvement vers le joueur
                 navMeshAgent.isStopped = false;
                 navMeshAgent.SetDestination(player.position);
-
-                // Jouer l'animation de déplacement
-                anim.CrossFade("move_forward");
+                playerInAttackRange = false;
             }
         }
     }
@@ -85,10 +90,34 @@ public class EnemyController : MonoBehaviour
         GameManager.Instance.life -= enemyData.damage;
     }
 
+    public void SetEnemyData(EnemyData data)
+    {
+        enemyData = data;
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.speed = enemyData.speed;
+        }
+        else
+        {
+            navMeshAgent = GetComponent<NavMeshAgent>();
+            if (navMeshAgent != null)
+            {
+                navMeshAgent.speed = enemyData.speed;
+            }
+            else
+            {
+                Debug.LogError("NavMeshAgent non trouvé sur l'ennemi");
+            }
+        }
+    }
+
     public void TakeDamage(int damage)
     {
+        if (isDead)
+            return;
+
         enemyData.health -= damage;
-        if (enemyData.health <= 0)
+        if (enemyData.health <= 0 && !isDead)
         {
             StartCoroutine(Die());
         }
@@ -96,10 +125,10 @@ public class EnemyController : MonoBehaviour
 
     IEnumerator Die()
     {
+        isDead = true;
+        navMeshAgent.enabled = false;
         // Jouer l'animation de mort
-        anim.Stop("attack_short_001");
-        anim.Stop("move_forward");
-        anim.CrossFade("dead");
+        anim.Play("dead");
 
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);

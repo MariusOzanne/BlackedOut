@@ -46,18 +46,20 @@ public class PortalController : MonoBehaviour
         {
             // Choix aléatoire de type d'ennemi dans la liste enemyTypes
             int randomIndex = Random.Range(0, enemyTypes.Count);
-            EnemyData enemyData = enemyTypes[randomIndex];
+            EnemyData originalData = enemyTypes[randomIndex];
+
+            // Cloner les données d'ennemi pour chaque nouveau spawn
+            EnemyData clonedData = originalData.Clone();
 
             // Faire apparaître l'ennemi correspondant au type choisi
-            GameObject enemyPrefab = enemyData.enemyPrefab;
+            GameObject enemyPrefab = originalData.enemyPrefab;
             GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
 
-            newEnemy.tag = "Enemy";
-
-            CapsuleCollider enemyCollider = newEnemy.GetComponent<CapsuleCollider>();
-            if (enemyCollider != null)
+            // Assigner les données clonées à l'ennemi
+            EnemyController enemyController = newEnemy.GetComponent<EnemyController>();
+            if (enemyController != null)
             {
-                enemyCollider.isTrigger = true;
+                enemyController.SetEnemyData(clonedData);
             }
 
             enemiesSpawned++;

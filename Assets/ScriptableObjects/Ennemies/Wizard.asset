@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyName: Wizard
   maxHealth: 100
-  health: -30
+  health: 100
   speed: 3
   damage: 10
   attackCooldown: 5
