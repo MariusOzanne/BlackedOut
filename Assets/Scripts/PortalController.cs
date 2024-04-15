@@ -10,23 +10,22 @@ public class PortalController : MonoBehaviour
     [Header("Choix des ennemis apparaissant du portail")]
     [SerializeField] private List<EnemyData> enemyTypes;
     [Header("Vie du portail")]
-    [SerializeField] private float portalHealth;
+    public float portalHealth;
     [Header("Setup des vagues")]
     [SerializeField] private int enemiesPerWave; // Nombre d'ennemis par vague
     [SerializeField] private float spawnInterval; // Intervalle entre les apparitions d'ennemis
     [SerializeField] private float waveInterval; // Intervalle entre les vagues
-    [Header("UI")]
-    [SerializeField] private Slider healthSlider;
+    
     #endregion
-
-    private float currentHealth;
+    
+    public float currentHealth;
+    
     private float nextWaveTime;
     private int enemiesSpawned;
 
     void Start()
     {
         currentHealth = portalHealth;
-        UpdateHealthBar();
         nextWaveTime = Time.time + waveInterval;
     }
 
@@ -67,16 +66,9 @@ public class PortalController : MonoBehaviour
         }
     }
 
-    void UpdateHealthBar()
-    {
-        float healthRatio = currentHealth / portalHealth;
-        healthSlider.value = healthRatio;
-    }
-
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
-        UpdateHealthBar();
         if (currentHealth <= 0)
         {
             Destroy(gameObject);
