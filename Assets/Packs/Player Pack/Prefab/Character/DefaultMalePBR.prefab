@@ -476,9 +476,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementJoystick: {fileID: 0}
   rotationJoystick: {fileID: 0}
-  projectilePrefab: {fileID: 1000011023395326, guid: 2ce15a1900ef14a459f78260cd05a3dc,
+  bulletPrefab: {fileID: 1000011023395326, guid: 2ce15a1900ef14a459f78260cd05a3dc,
     type: 3}
-  projectileSpawnPoint: {fileID: 3042698370593075881}
+  bulletSpawnPoint: {fileID: 3042698370593075881}
   speed: 5
   fireThreshold: 0.9
   fireRate: 0.3

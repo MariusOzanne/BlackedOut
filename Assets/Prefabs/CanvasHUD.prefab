@@ -182,7 +182,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef4e59745d7d095489929d7f91cb47c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  isPlayer: 1
+  isPortal: 0
   lifeBar: {fileID: 9180786080624030264}
   gradient:
     serializedVersion: 2
@@ -214,7 +215,6 @@ MonoBehaviour:
     m_ColorSpace: -1
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
-  fill: {fileID: 8144630285198680333}
 --- !u!1 &1538346318006406834
 GameObject:
   m_ObjectHideFlags: 0

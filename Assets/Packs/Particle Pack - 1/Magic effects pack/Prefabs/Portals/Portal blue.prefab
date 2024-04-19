@@ -4960,6 +4960,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2640502321201987138}
   - component: {fileID: 7709469637664816226}
+  - component: {fileID: 5451580108500362417}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -5040,6 +5041,51 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5451580108500362417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4569698987822013335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef4e59745d7d095489929d7f91cb47c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isPlayer: 0
+  isPortal: 1
+  lifeBar: {fileID: 7709469637664816226}
+  gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 0.105882354, b: 0, a: 1}
+    key1: {r: 0.9529412, g: 1, b: 0, a: 1}
+    key2: {r: 0.08235294, g: 1, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 21823
+    ctime1: 43712
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 1
+    m_ColorSpace: -1
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
 --- !u!1 &4689747713474125216
 GameObject:
   m_ObjectHideFlags: 0
@@ -5086,11 +5132,12 @@ GameObject:
   m_Component:
   - component: {fileID: 5516487406859467972}
   - component: {fileID: 8445763112410648400}
+  - component: {fileID: 6920355632925163754}
   - component: {fileID: 3339390747418099020}
   - component: {fileID: 6615356250931797618}
   m_Layer: 0
   m_Name: Portal blue
-  m_TagString: Untagged
+  m_TagString: Portal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -9895,6 +9942,27 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!65 &6920355632925163754
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5607819269926399345}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.5, y: 2.5, z: 0.5}
+  m_Center: {x: 0, y: 0.00050002337, z: 0}
 --- !u!199 &3339390747418099020
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -9987,7 +10055,7 @@ MonoBehaviour:
   enemiesPerWave: 3
   spawnInterval: 1
   waveInterval: 10
-  healthSlider: {fileID: 7709469637664816226}
+  currentHealth: 100
 --- !u!1 &5995944143312657410
 GameObject:
   m_ObjectHideFlags: 0
