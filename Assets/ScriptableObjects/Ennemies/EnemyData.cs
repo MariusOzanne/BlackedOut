@@ -13,6 +13,11 @@ public class EnemyData : ScriptableObject
     public float attackCooldown;
     public GameObject enemyPrefab;
 
+    [Header("Récompenses")]
+    public int minCoins;
+    public int maxCoins;
+    public int scoreValue;
+
     /// <summary>
     /// Crée une copie de cet EnemyData avec une nouvelle santé maximale et des valeurs réinitialisées.
     /// </summary>
@@ -27,6 +32,9 @@ public class EnemyData : ScriptableObject
         clone.damage = this.damage;
         clone.attackCooldown = this.attackCooldown;
         clone.enemyPrefab = this.enemyPrefab;
+        clone.minCoins = this.minCoins;
+        clone.maxCoins = this.maxCoins;
+        clone.scoreValue = this.scoreValue;
         return clone;
     }
 }

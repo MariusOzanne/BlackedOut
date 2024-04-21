@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
@@ -12,6 +13,10 @@ public class GameManager : MonoBehaviour
     {
         get
         {
+            if (_Instance == null)
+            {
+                _Instance = new GameManager();
+            }
             return _Instance;
         }
     }
@@ -20,8 +25,11 @@ public class GameManager : MonoBehaviour
     [Range(0, 100)] public int life;
     [Range(0, 100)] public int shield;
     public int coins;
+    public int score;
 
     [SerializeField] private GameObject defeatPanel;
+    [SerializeField] private Text coinsText;
+    [SerializeField] private Text scoreText;
 
     // On creee le patern singleton
     // Permettant d'acceder a un script a partir d'un autre script
@@ -39,6 +47,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        UpdateCoinCount();
+        UpdateScore();
+    }
+
     public void CheckPlayerDefeat()
     {
         if (life <= 0)
@@ -51,6 +65,16 @@ public class GameManager : MonoBehaviour
     {
         defeatPanel.SetActive(true);
         Time.timeScale = 0;
+    }
+
+    public void UpdateCoinCount()
+    {
+        coinsText.text = "Coins : " + coins;
+    }
+
+    public void UpdateScore()
+    {
+        scoreText.text = "Score : " + score;
     }
 
     public void RestartGame()

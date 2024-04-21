@@ -10,6 +10,9 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private GameObject detectionZone; // Zone de détection de déplacement
     [SerializeField] private GameObject attackZone; // Zone de détection d'attaque
 
+    [Header("Prefab de la pièce")]
+    [SerializeField] private GameObject coinPrefab;
+
     private Transform player;
     private NavMeshAgent navMeshAgent;
     private float nextAttackTime;
@@ -132,6 +135,23 @@ public class EnemyController : MonoBehaviour
         navMeshAgent.enabled = false;
         // Jouer l'animation de mort
         anim.Play("dead");
+
+        // Gestion des pièces à lâcher
+        int coinsToDrop = Random.Range(enemyData.minCoins, enemyData.maxCoins + 1);
+        for (int i = 0; i < coinsToDrop; i++)
+        {
+            // Position aléatoire autour de l'ennemi
+            Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 2;
+            spawnPosition.y = 1;
+
+            // Appliquer une rotation initiale de -90 degrés autour de l'axe X et créer une rotation initiale autour de l'axe Y
+            Quaternion spawnRotation = Quaternion.Euler(-90, Random.Range(0, 360), 0);
+            Instantiate(coinPrefab, spawnPosition, spawnRotation);
+        }
+
+        // Incrémentation du score
+        GameManager.Instance.score += enemyData.scoreValue;
+        GameManager.Instance.UpdateScore();
 
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);
