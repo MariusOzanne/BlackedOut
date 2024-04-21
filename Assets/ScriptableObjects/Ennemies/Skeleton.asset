@@ -20,3 +20,6 @@ MonoBehaviour:
   attackCooldown: 2
   enemyPrefab: {fileID: 7649550389304180080, guid: 6b4461680ebbbba4bbd8c1e2cfd89dc9,
     type: 3}
+  minCoins: 1
+  maxCoins: 3
+  scoreValue: 50

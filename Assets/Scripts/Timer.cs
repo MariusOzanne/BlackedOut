@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    public Text timerText;
-    private float timeRemaining = 180f;
+    [SerializeField] private Text timerText;
+    [SerializeField][Range(0,900)] private float timeRemaining;
 
     void Update()
     {
-        if (timeRemaining > 0f)
+        if (timeRemaining >= 0f)
         {
             timeRemaining -= Time.deltaTime;
 
@@ -18,7 +18,7 @@ public class Timer : MonoBehaviour
         }
         else
         {
-            Debug.Log("Le temps est écoulé!");
+            GameManager.Instance.ShowTimeOverPanel();
         }
     }
 

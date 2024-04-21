@@ -24,12 +24,14 @@ public class GameManager : MonoBehaviour
     [Header("Caracteristiques du joueur")]
     [Range(0, 100)] public int life;
     [Range(0, 100)] public int shield;
+    [Header("Score du joueur")]
     public int coins;
     public int score;
-
-    [SerializeField] private GameObject defeatPanel;
     [SerializeField] private Text coinsText;
     [SerializeField] private Text scoreText;
+    [Header("Panel du joueur")]
+    [SerializeField] private GameObject defeatPanel;
+    [SerializeField] private GameObject timeOverPanel;
 
     // On creee le patern singleton
     // Permettant d'acceder a un script a partir d'un autre script
@@ -67,25 +69,25 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
     }
 
+    public void ShowTimeOverPanel()
+    {
+        timeOverPanel.SetActive(true);
+        Time.timeScale = 0;
+    }
+
     public void UpdateCoinCount()
     {
-        coinsText.text = "Coins : " + coins;
+        coinsText.text = "" + coins;
     }
 
     public void UpdateScore()
     {
-        scoreText.text = "Score : " + score;
+        scoreText.text = "" + score;
     }
 
     public void RestartGame()
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void LoadMainMenu()
-    {
-        Time.timeScale = 1;
-        SceneManager.LoadScene("MenuScene");
     }
 }

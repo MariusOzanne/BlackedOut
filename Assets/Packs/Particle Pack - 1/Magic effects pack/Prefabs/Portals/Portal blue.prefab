@@ -10052,7 +10052,7 @@ MonoBehaviour:
   enemyTypes:
   - {fileID: 11400000, guid: aec98b4b9f6920d43b158419dfc5007e, type: 2}
   portalHealth: 100
-  enemiesPerWave: 3
+  enemiesPerWave: 1
   spawnInterval: 1
   waveInterval: 10
   currentHealth: 100
