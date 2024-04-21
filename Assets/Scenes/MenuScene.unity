@@ -415,16 +415,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 157289286478637750, guid: cdb83a17c3a002846a0fad47608e2e1f,
+    - target: {fileID: 798088146024574204, guid: cdb83a17c3a002846a0fad47608e2e1f,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 4571808044011587687}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 814420852304271258, guid: cdb83a17c3a002846a0fad47608e2e1f,
         type: 3}
       propertyPath: m_Name
       value: CanvasMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 1131538328133397252, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4571808044011587687}
     - target: {fileID: 1260545099887679852, guid: cdb83a17c3a002846a0fad47608e2e1f,
         type: 3}
       propertyPath: m_Pivot.x
@@ -525,6 +530,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4174467714049331327, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 4571808044011587687}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
