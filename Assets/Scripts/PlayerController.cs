@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("Player setup")]
+    [SerializeField] private float speed;
+    [Header("Joystick setup")]
     [SerializeField] private Joystick movementJoystick;
     [SerializeField] private Joystick rotationJoystick;
+    [Header("Shooting setup")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform bulletSpawnPoint;
-
-    [SerializeField] private float speed;
     [SerializeField] private float fireThreshold;
     [SerializeField] private float fireRate;
 
@@ -87,6 +89,11 @@ public class PlayerController : MonoBehaviour
         {
             FireBullet();
             lastFireTime = Time.time; // Mise à jour du temps pour le dernier tir
+            animator.SetBool("isShooting", true);
+        }
+        else
+        {
+            animator.SetBool("isShooting", false);
         }
     }
 

@@ -1117,6 +1117,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2038225243400512910, guid: 05e81bb01354e4645b306bc87f3f1e2d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2604297442653909724, guid: 05e81bb01354e4645b306bc87f3f1e2d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1137,6 +1142,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 425408497}
+    - target: {fileID: 3804183436424274338, guid: 05e81bb01354e4645b306bc87f3f1e2d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3827255040223183489, guid: 05e81bb01354e4645b306bc87f3f1e2d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -1147,11 +1157,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: CanvasHUD
       objectReference: {fileID: 0}
+    - target: {fileID: 4340616234413022898, guid: 05e81bb01354e4645b306bc87f3f1e2d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5368218142432342654, guid: 05e81bb01354e4645b306bc87f3f1e2d,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 812140935}
+    - target: {fileID: 7678513860406753057, guid: 05e81bb01354e4645b306bc87f3f1e2d,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
