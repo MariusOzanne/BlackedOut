@@ -71,7 +71,14 @@ public class PortalController : MonoBehaviour
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
-            Destroy(gameObject);
+            DestroyPortal();
         }
+    }
+
+    private void DestroyPortal()
+    {
+        GameManager.Instance.score += 500; // Incrémenter le score
+        GameManager.Instance.UpdateScore(); // Mettre à jour le score dans l'UI
+        Destroy(gameObject); // Détruire le portail
     }
 }

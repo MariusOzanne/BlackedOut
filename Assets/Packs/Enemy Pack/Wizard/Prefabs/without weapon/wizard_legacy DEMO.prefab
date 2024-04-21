@@ -15758,6 +15758,8 @@ MonoBehaviour:
   enemyData: {fileID: 11400000, guid: aec98b4b9f6920d43b158419dfc5007e, type: 2}
   detectionZone: {fileID: 1289410457243343719}
   attackZone: {fileID: 6792950091735773979}
+  coinPrefab: {fileID: 3129200342344496425, guid: 3e29573f06c0a7e4fa986fff41de17af,
+    type: 3}
 --- !u!1 &1000011604250198
 GameObject:
   m_ObjectHideFlags: 0
@@ -32413,6 +32415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayer: 0
+  isPortal: 0
   lifeBar: {fileID: 6839781312083341995}
   gradient:
     serializedVersion: 2
