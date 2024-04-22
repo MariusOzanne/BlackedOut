@@ -10,6 +10,9 @@ public class MazeGenerator : MonoBehaviour
     private GameObject mazeCellPrefab;
 
     [SerializeField]
+    private GameObject SpawnerPrefab;
+
+    [SerializeField]
     private int mazeWidth;
 
     [SerializeField]
@@ -28,11 +31,11 @@ public class MazeGenerator : MonoBehaviour
             for (int z = 0; z < mazeDepth; z++)
             {
                 GameObject cell = Instantiate(mazeCellPrefab, Vector3.zero, Quaternion.identity);
-                MazeCell AzeCell = cell.GetComponent<MazeCell>();
-                cell.transform.position = new Vector3(AzeCell.CellWidth * x, 0, AzeCell.CellWidth * z);
-                AzeCell.x = x;
-                AzeCell.z = z;
-                mazeGrid[x, z] = AzeCell;
+                MazeCell tmpCell = cell.GetComponent<MazeCell>();
+                cell.transform.position = new Vector3(tmpCell.CellWidth * x, 0, tmpCell.CellWidth * z);
+                tmpCell.x = x;
+                tmpCell.z = z;
+                mazeGrid[x, z] = tmpCell;
 
                 /*Debug.Log(mazeCellPrefab.CellWidth);
                 Debug.Log(mazeCellPrefab.CellWidth * x + "x coord");
@@ -40,19 +43,38 @@ public class MazeGenerator : MonoBehaviour
             }
         }
         // Generate the first maze cell
+        GenerateRoomFromCenterPoint(mazeGrid[mazeWidth / 2, mazeDepth / 2], 10, 10);
         GenerateMaze(null, mazeGrid[0, 0]);
 
-        GenerateRoomAtPointInArray(mazeGrid[mazeWidth/2, mazeDepth/2]);
     }
 
-    private void GenerateRoomAtPointInArray(MazeCell centerCell)
+    private void GenerateRoomFromCenterPoint(MazeCell centerCell, float roomWidth, float roomHeight)
     {
-        int roomWidth = 5; 
-        int roomDepth = 5;
 
-        for (int x = 0;x < roomWidth; x++)
+        Vector3 roomCenter = centerCell.transform.position;
+
+        Debug.Log(roomCenter);
+        Debug.Log(mazeGrid[mazeWidth / 2, mazeDepth / 2].transform.position);
+
+        // remove all objects in a given area
+        foreach (MazeCell cell in mazeGrid)
         {
+            if (Vector3.Distance(cell.transform.position, centerCell.transform.position) <= roomWidth)
+            {
+                cell.ClearObject();
+            }
+        }
+    }
 
+    private void GenerateSpawner(Vector3 position, GameObject spawnerObject)
+    {
+
+        foreach (MazeCell cell in mazeGrid)
+        {
+            if (Vector3.Distance(cell.transform.position, position) <= 5)
+            {
+                Instantiate(spawnerObject);
+            }
         }
     }
 
@@ -78,7 +100,7 @@ public class MazeGenerator : MonoBehaviour
     {
         var unvisitedCells = GetUnvisitedCells(currentCell);
 
-        return unvisitedCells.OrderBy(_ => Random.Range(1, 10)).FirstOrDefault();
+        return unvisitedCells.OrderBy(_ => UnityEngine.Random.Range(1, 10)).FirstOrDefault();
     }
 
     private IEnumerable<MazeCell> GetUnvisitedCells(MazeCell currentCell)

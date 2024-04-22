@@ -37,7 +37,6 @@ public class MazeCell : MonoBehaviour
         IsVisited = true;
         unvisitedBlock.SetActive(false);
     }
-
     public void ClearLeftWall()
     {
         leftWall.SetActive(false);
@@ -54,7 +53,6 @@ public class MazeCell : MonoBehaviour
     {
         backWall.SetActive(false);
     }
-
     public void ClearObject()
     {
         gameObject.SetActive(false);
