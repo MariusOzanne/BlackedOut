@@ -36,22 +36,21 @@ public class NPCDialogue : MonoBehaviour
     {
         // Lancer le dialogue du NPC uniquement lorsque le joueur est à proximité et a interagi avec le bouton
         dialogueManager.dialoguePanel.SetActive(true);
+        dialogueManager.SetNPCDialogue(true); 
         dialogueManager.StartDialogue(pnjName, dialogueLines);
         talkButton.SetActive(false);
     }
 
-    // Méthode appelée lorsque le joueur a terminé le dialogue avec le PNJ
-    public void EndDialogue()
+    // Lorsque le PNJ a terminé le dialogue
+    public void EndDialogueForNPC()
     {
-        dialogueManager.dialoguePanel.SetActive(false);
-
-        // Activation des portails après la fin du dialogue
+        // Activation des portails après la fin du dialogue du PNJ
         foreach (GameObject portal in portalsToActivate)
         {
             portal.SetActive(true);
         }
 
-        // Destruction du PNJ après la fin du dialogue
+        talkButton.SetActive(false);
         Destroy(gameObject);
     }
 }

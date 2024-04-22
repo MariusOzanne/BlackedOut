@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
+    [Header("Vitessse du dialogue")]
     [SerializeField] private float letterDelay;
     [Header("Panel Setup")]
     public Text speakerNameText;
@@ -13,6 +14,7 @@ public class DialogueManager : MonoBehaviour
 
     private string[] dialogueLines; // Contiendra toutes les lignes de dialogue
     private int currentLineIndex = 0; // Index de la ligne de dialogue actuelle
+    private bool isNPCDialogue = false; // Variable pour vérifier si le dialogue est celui du PNJ
 
     private void Start()
     {
@@ -53,6 +55,12 @@ public class DialogueManager : MonoBehaviour
         {
             // S'il n'y a plus de lignes de dialogue, fermer le panneau de dialogue
             dialoguePanel.SetActive(false);
+            // Vérifier si le dialogue est celui du PNJ et activer les portails si c'est le cas
+            if (isNPCDialogue)
+            {
+                // Appeler la fonction EndDialogueForNPC du PNJ lorsque le dialogue est terminé
+                FindObjectOfType<NPCDialogue>()?.EndDialogueForNPC();
+            }
         }
     }
 
@@ -61,6 +69,13 @@ public class DialogueManager : MonoBehaviour
     {
         speakerNameText.text = speakerName;
         this.dialogueLines = dialogueLines;
+        currentLineIndex = 0;
         StartCoroutine(TypeDialogue(dialogueLines[currentLineIndex]));
+    }
+
+    // Définir le dialogue comme étant celui du PNJ
+    public void SetNPCDialogue(bool isNPCDialogue)
+    {
+        this.isNPCDialogue = isNPCDialogue;
     }
 }
