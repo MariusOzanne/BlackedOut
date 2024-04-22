@@ -24,11 +24,14 @@ public class GameManager : MonoBehaviour
     [Header("Caracteristiques du joueur")]
     [Range(0, 100)] public int life;
     [Range(0, 100)] public int shield;
+    
     [Header("Score du joueur")]
     public int coins;
     public int score;
+    
     [SerializeField] private Text coinsText;
     [SerializeField] private Text scoreText;
+    
     [Header("Panel du joueur")]
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject timeOverPanel;
@@ -55,12 +58,45 @@ public class GameManager : MonoBehaviour
         UpdateScore();
     }
 
+    public void AddShield(int amount)
+    {
+        shield += amount;
+        shield = Mathf.Min(shield, life);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        if (shield > 0)
+        {
+            int damageToShield = Mathf.Min(amount, shield);
+            shield -= damageToShield;
+            amount -= damageToShield;
+        }
+
+        if (amount > 0)
+        {
+            life -= amount;
+        }
+
+        CheckPlayerDefeat();
+    }
+
     public void CheckPlayerDefeat()
     {
         if (life <= 0)
         {
             ShowDefeatPanel();
         }
+    }
+
+    public void UpdateCoinCount()
+    {
+        coinsText.text = coins.ToString();
+    }
+
+    public void UpdateScore()
+    {
+        scoreText.text = score.ToString();
     }
 
     private void ShowDefeatPanel()
@@ -73,16 +109,6 @@ public class GameManager : MonoBehaviour
     {
         timeOverPanel.SetActive(true);
         Time.timeScale = 0;
-    }
-
-    public void UpdateCoinCount()
-    {
-        coinsText.text = "" + coins;
-    }
-
-    public void UpdateScore()
-    {
-        scoreText.text = "" + score;
     }
 
     public void RestartGame()

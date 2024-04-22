@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: SmallHeal
   m_EditorClassIdentifier: 
   itemName: SmallHeal
-  itemDescription: 
-  regenPts: 15
+  itemDescription: "R\xE9cup\xE9rer Soin"
+  regenPts: 20
   shieldPts: 0
-  itemPrefab: {fileID: 0}
+  itemPrefab: {fileID: 7351022686652170608, guid: fb5a9652227c545d98a413cd73b80b69,
+    type: 3}

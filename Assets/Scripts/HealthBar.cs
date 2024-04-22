@@ -9,6 +9,7 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private bool isPlayer;
     [SerializeField] private bool isPortal;
     [SerializeField] private Slider lifeBar;
+    [SerializeField] private Slider shieldBar;
     [SerializeField] private Gradient gradient;
 
     private Image fill;
@@ -40,6 +41,11 @@ public class HealthBar : MonoBehaviour
             maxHealth = GameManager.Instance.life;
             lifeBar.maxValue = maxHealth;
             lifeBar.value = maxHealth;
+            if (shieldBar != null)
+            {
+                shieldBar.maxValue = maxHealth;
+                shieldBar.value = GameManager.Instance.shield;
+            }
         }
         else if (isPortal)
         {
@@ -77,21 +83,45 @@ public class HealthBar : MonoBehaviour
 
     void Update()
     {
-        int currentHealth;
         if (isPlayer)
         {
-            currentHealth = GameManager.Instance.life;
+            UpdatePlayerHealthBar();
         }
         else if (isPortal && portalController != null)
         {
-            currentHealth = (int)portalController.currentHealth;
+            UpdatePortalHealthBar();
         }
         else
         {
-            currentHealth = GetComponentInParent<EnemyController>()?.enemyData.health ?? 0;
+            UpdateEnemyHealthBar();
         }
+    }
 
+    private void UpdatePlayerHealthBar()
+    {
+        lifeBar.value = GameManager.Instance.life;
+        fill.color = gradient.Evaluate(lifeBar.normalizedValue);
+
+        if (shieldBar != null)
+        {
+            shieldBar.value = GameManager.Instance.shield;
+        }
+    }
+
+    private void UpdatePortalHealthBar()
+    {
+        int currentHealth = (int)portalController.currentHealth;
         lifeBar.value = currentHealth;
         fill.color = gradient.Evaluate(lifeBar.normalizedValue);
+    }
+
+    private void UpdateEnemyHealthBar()
+    {
+        EnemyData enemyData = GetComponentInParent<EnemyController>()?.enemyData;
+        if (enemyData != null)
+        {
+            lifeBar.value = enemyData.health;
+            fill.color = gradient.Evaluate(lifeBar.normalizedValue);
+        }
     }
 }

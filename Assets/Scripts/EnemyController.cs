@@ -90,10 +90,7 @@ public class EnemyController : MonoBehaviour
     void Attack()
     {
         // Appliquer les dégâts au joueur
-        GameManager.Instance.life -= enemyData.damage;
-
-        // Vérifier si le joueur a perdu toute sa vie
-        GameManager.Instance.CheckPlayerDefeat();
+        GameManager.Instance.TakeDamage(enemyData.damage);
     }
 
     public void SetEnemyData(EnemyData data)

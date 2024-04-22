@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: SmallShield
   m_EditorClassIdentifier: 
   itemName: SmallShield
-  itemDescription: 
+  itemDescription: "R\xE9cup\xE9rer Shield"
   regenPts: 0
   shieldPts: 15
-  itemPrefab: {fileID: 0}
+  itemPrefab: {fileID: 9079380502383082059, guid: 4fc855fb7bf094a0891967175e5bdb17,
+    type: 3}
