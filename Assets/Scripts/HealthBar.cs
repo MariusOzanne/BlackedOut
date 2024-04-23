@@ -38,7 +38,7 @@ public class HealthBar : MonoBehaviour
     {
         if (isPlayer)
         {
-            maxHealth = GameManager.Instance.life;
+            maxHealth = GameManager.Instance.health;
             lifeBar.maxValue = maxHealth;
             lifeBar.value = maxHealth;
             if (shieldBar != null)
@@ -99,7 +99,7 @@ public class HealthBar : MonoBehaviour
 
     private void UpdatePlayerHealthBar()
     {
-        lifeBar.value = GameManager.Instance.life;
+        lifeBar.value = GameManager.Instance.health;
         fill.color = gradient.Evaluate(lifeBar.normalizedValue);
 
         if (shieldBar != null)

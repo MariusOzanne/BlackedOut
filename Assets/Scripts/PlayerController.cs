@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Player setup")]
-    [SerializeField] private float speed;
     [Header("Joystick setup")]
     [SerializeField] private Joystick movementJoystick;
     [SerializeField] private Joystick rotationJoystick;
@@ -63,7 +61,8 @@ public class PlayerController : MonoBehaviour
 
     private void Move()
     {
-        rb.velocity = new Vector3(moveDirection.x * speed, rb.velocity.y, moveDirection.z * speed);
+        float currentSpeed = GameManager.Instance.speed;
+        rb.velocity = new Vector3(moveDirection.x * currentSpeed, rb.velocity.y, moveDirection.z * currentSpeed);
 
         // Si le joueur se déplace, active l'animation de marche
         if (moveDirection.magnitude > 0)

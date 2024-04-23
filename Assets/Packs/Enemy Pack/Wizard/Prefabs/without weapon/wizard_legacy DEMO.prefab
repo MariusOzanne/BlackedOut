@@ -32417,6 +32417,7 @@ MonoBehaviour:
   isPlayer: 0
   isPortal: 0
   lifeBar: {fileID: 6839781312083341995}
+  shieldBar: {fileID: 0}
   gradient:
     serializedVersion: 2
     key0: {r: 1, g: 0.105882354, b: 0, a: 1}

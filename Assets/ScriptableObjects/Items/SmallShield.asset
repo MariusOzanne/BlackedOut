@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69db6f5fc539bf24082639d386056da8, type: 3}
   m_Name: SmallShield
   m_EditorClassIdentifier: 
-  itemName: SmallShield
-  itemDescription: "R\xE9cup\xE9rer Shield"
+  itemName: Shield
+  itemDescription: "R\xE9cup\xE9rer Bouclier"
   regenPts: 0
   shieldPts: 15
   itemPrefab: {fileID: 9079380502383082059, guid: 4fc855fb7bf094a0891967175e5bdb17,

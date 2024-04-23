@@ -22,13 +22,15 @@ public class GameManager : MonoBehaviour
     }
 
     [Header("Caracteristiques du joueur")]
-    [Range(0, 100)] public int life;
+    [Range(0, 100)] public int health;
     [Range(0, 100)] public int shield;
-    
+    public float speed;
+    public int damage;
+
     [Header("Score du joueur")]
     public int coins;
     public int score;
-    
+
     [SerializeField] private Text coinsText;
     [SerializeField] private Text scoreText;
     
@@ -61,7 +63,22 @@ public class GameManager : MonoBehaviour
     public void AddShield(int amount)
     {
         shield += amount;
-        shield = Mathf.Min(shield, life);
+        shield = Mathf.Min(shield, health);
+    }
+
+    public void ActivateRageMode()
+    {
+        speed *= 1.5f;
+        damage += 20;
+
+        StartCoroutine(ResetRageMode());
+    }
+
+    private IEnumerator ResetRageMode()
+    {
+        yield return new WaitForSeconds(10);
+        speed /= 1.5f;
+        damage -= 20;
     }
 
     public void TakeDamage(int amount)
@@ -75,7 +92,7 @@ public class GameManager : MonoBehaviour
 
         if (amount > 0)
         {
-            life -= amount;
+            health -= amount;
         }
 
         CheckPlayerDefeat();
@@ -83,7 +100,7 @@ public class GameManager : MonoBehaviour
 
     public void CheckPlayerDefeat()
     {
-        if (life <= 0)
+        if (health <= 0)
         {
             ShowDefeatPanel();
         }

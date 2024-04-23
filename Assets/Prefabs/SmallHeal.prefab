@@ -11,12 +11,11 @@ GameObject:
   - component: {fileID: 1504868679987848834}
   - component: {fileID: 2786219400738705516}
   - component: {fileID: 7584599945887870891}
-  - component: {fileID: 3589563254424277220}
   - component: {fileID: 1201710247567858195}
   - component: {fileID: 6474032036756589625}
   m_Layer: 0
   m_Name: SmallHeal
-  m_TagString: Item
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 7351022686652170608}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 3.4, y: 0.4, z: 3.99}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -86,28 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3589563254424277220
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7351022686652170608}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 2a7aeccaf51cb44258e96e4127ac8d7e, type: 3}
 --- !u!135 &1201710247567858195
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -141,8 +118,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e1a721e5574e443bf89e39b64dbfa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemsDataTemplate: {fileID: 11400000, guid: 0c0b9f12a2e4d1249ae27dedd3d3f3ae, type: 2}
-  itemsButtonPrefab: {fileID: 3288445095826104144, guid: 9473adddfbf05a14e95e04564be1f562,
+  itemsData: {fileID: 11400000, guid: 0c0b9f12a2e4d1249ae27dedd3d3f3ae, type: 2}
+  itemsButton: {fileID: 2389451510055194521, guid: 2f83a8b4e811e9a469e670a9f169e5c8,
     type: 3}
-  canvasTransform: {fileID: 2987674398013997803, guid: 05e81bb01354e4645b306bc87f3f1e2d,
+  itemsText: {fileID: 2225741203770301337, guid: c60b8bf82c781e54faf20c733c670d5c,
     type: 3}
