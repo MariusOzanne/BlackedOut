@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,58 +5,57 @@ public class ItemTrigger : MonoBehaviour
 {
     [SerializeField] private ItemsData itemsData;
     [SerializeField] private GameObject itemsButton;
-    [SerializeField] private GameObject itemsText;
+    [SerializeField] private Text itemsText;
     private GameObject items;
 
-    // Lorsque le joueur rentre en collision avec la potion
+    private void Start()
+    {
+        itemsButton.SetActive(false);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        // Si on touche le tag item
-        if (gameObject.CompareTag("Item"))
+        if (other.CompareTag("Player"))
         {
-            // Récupérer le bon item
-            items = gameObject;
+            items = gameObject;  // Stocke l'item actuellement accessible
+            itemsText.text = itemsData.itemDescription;  // Met à jour le texte selon l'item
+
+            // Active le bouton et configure le OnClickListener
             itemsButton.SetActive(true);
-            itemsText.GetComponent<Text>().text = "Récupérer l'objet";   // Affichage du texte
+            itemsButton.GetComponent<Button>().onClick.RemoveAllListeners();  // Supprime tous les anciens listeners
+            itemsButton.GetComponent<Button>().onClick.AddListener(Pick);  // Ajoute le listener de l'item actuel
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // Si on sors de la collision avec l'item
-        if (gameObject.CompareTag("Item"))
+        if (other.CompareTag("Player"))
         {
-            // On libère la variable
             itemsButton.SetActive(false);
+            itemsButton.GetComponent<Button>().onClick.RemoveAllListeners();  // Nettoyage après la sortie
         }
     }
 
     public void Pick()
     {
+        if (items == null)
+            return;
 
-        // S'il y'a collision avec l'objet nommé
-        switch (items.name)
+        switch (itemsData.itemName)
         {
-            #region Consommables
-
-            case "SmallHeal":
-                GameManager.Instance.life += itemsData.regenPts; 
+            case "Heal":
+                GameManager.Instance.health += itemsData.regenPts;
                 break;
-
-            case "SmallShield":
-                GameManager.Instance.shield += itemsData.shieldPts;   // On récupère 5 points de faim
+            case "Shield":
+                GameManager.Instance.AddShield(itemsData.shieldPts);
                 break;
-
-            #endregion
-
-            default:
-                // Si l'objet n'a pas de nom défini, on sort de la fonction
-                return;
+            case "Rage":
+                GameManager.Instance.ActivateRageMode();
+                break;
         }
 
-        // On masque l'item et le dialogue lorsque l'objet a été ramassé
+        // Désactive l'item et masque le bouton une fois l'item ramassé
         items.SetActive(false);
         itemsButton.SetActive(false);
-        
     }
 }
