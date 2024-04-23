@@ -19,6 +19,7 @@ public class MazeGenerator : MonoBehaviour
     private int mazeDepth;
 
     private MazeCell[,] mazeGrid;
+    private List<Vector3> spawnerPositions = new List<Vector3>();
 
     void Start()
     {
@@ -36,15 +37,12 @@ public class MazeGenerator : MonoBehaviour
                 tmpCell.x = x;
                 tmpCell.z = z;
                 mazeGrid[x, z] = tmpCell;
-
-                /*Debug.Log(mazeCellPrefab.CellWidth);
-                Debug.Log(mazeCellPrefab.CellWidth * x + "x coord");
-                Debug.Log(mazeCellPrefab.CellWidth * z + "z coord");*/
             }
         }
         // Generate the first maze cell
         GenerateRoomFromCenterPoint(mazeGrid[mazeWidth / 2, mazeDepth / 2], 10, 10);
         GenerateMaze(null, mazeGrid[0, 0]);
+        GenerateSpawner(RandomSpawnerPositions(), SpawnerPrefab);
 
     }
 
@@ -73,9 +71,20 @@ public class MazeGenerator : MonoBehaviour
         {
             if (Vector3.Distance(cell.transform.position, position) <= 5)
             {
-                Instantiate(spawnerObject);
+                cell.ClearObject();
             }
         }
+        Instantiate(spawnerObject, position, Quaternion.identity);
+    }
+
+    private Vector3 RandomSpawnerPositions()
+    {
+        spawnerPositions.Add(new Vector3 (mazeDepth / 5, 0, mazeWidth / 5));
+        spawnerPositions.Add(new Vector3 (mazeDepth / 5, 0, mazeWidth / 5 * 4));
+        spawnerPositions.Add(new Vector3 (mazeDepth / 5 * 4, 0, mazeWidth / 5 * 4));
+        spawnerPositions.Add(new Vector3 (mazeDepth / 5 * 4, 0, mazeWidth / 5));
+
+        return spawnerPositions[UnityEngine.Random.Range(0, spawnerPositions.Count)];
     }
 
     private void GenerateMaze(MazeCell previousCell, MazeCell currentCell)
