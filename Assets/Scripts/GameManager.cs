@@ -31,13 +31,28 @@ public class GameManager : MonoBehaviour
     public int coins;
     public int score;
 
+    // Variables pour sauvegarder les valeurs de début de partie
+    private int initialCoins;
+    private int initialScore;
+
     [SerializeField] private Text coinsText;
     [SerializeField] private Text scoreText;
-    [SerializeField] private Text rageEffectText;
 
-    [Header("Panel du joueur")]
+    // Références pour les Texts dans les panels
+    [Header("Textes pour le panneau de défaite")]
+    [SerializeField] private Text coinsTextDefeat;
+    [SerializeField] private Text scoreTextDefeat;
+
+    [Header("Textes pour le panneau du temps écoulé")]
+    [SerializeField] private Text coinsTextTimeOver;
+    [SerializeField] private Text scoreTextTimeOver;
+
+    [Header("Panels du joueur")]
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject timeOverPanel;
+
+    [Header("Interface utilisateur de l'effet de rage")]
+    [SerializeField] private Text rageEffectText;
 
     private Coroutine rageCoroutine;
     private float defaultSpeed;
@@ -51,6 +66,7 @@ public class GameManager : MonoBehaviour
         if (_Instance == null)
         {
             _Instance = this;   // La variable _Instance = la classe GameManager
+            // DontDestroyOnLoad(gameObject);   // Garde le GameManager persistant entre les scènes
         }
         // Sinon
         else
@@ -64,8 +80,41 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        LoadPlayerData(); // Charge les données au démarrage
         UpdateCoinCount();
         UpdateScore();
+    }
+
+    public void SavePlayerData()
+    {
+        PlayerPrefs.SetInt("PlayerScore", score);
+        PlayerPrefs.SetInt("PlayerCoins", coins);
+        PlayerPrefs.Save();
+    }
+
+    private void LoadPlayerData()
+    {
+        score = PlayerPrefs.GetInt("PlayerScore", 0);
+        coins = PlayerPrefs.GetInt("PlayerCoins", 0);
+        initialScore = score;
+        initialCoins = coins;
+    }
+
+    public void ResetPlayerData()
+    {
+        PlayerPrefs.DeleteKey("PlayerScore");
+        PlayerPrefs.DeleteKey("PlayerCoins");
+
+        score = 0;
+        coins = 0;
+
+        initialScore = 0;
+        initialCoins = 0;
+
+        UpdateCoinCount();
+        UpdateScore();
+
+        SavePlayerData();
     }
 
     public void AddShield(int amount)
@@ -95,6 +144,7 @@ public class GameManager : MonoBehaviour
     {
         if (health <= 0)
         {
+            SavePlayerData(); // Sauvegarde les données avant de montrer le panneau de défaite
             ShowDefeatPanel();
         }
     }
@@ -111,13 +161,24 @@ public class GameManager : MonoBehaviour
 
     private void ShowDefeatPanel()
     {
-        defeatPanel.SetActive(true);
-        Time.timeScale = 0;
+        UpdateFinalPanel(coinsTextDefeat, scoreTextDefeat, defeatPanel);
     }
 
     public void ShowTimeOverPanel()
     {
-        timeOverPanel.SetActive(true);
+        UpdateFinalPanel(coinsTextTimeOver, scoreTextTimeOver, timeOverPanel);
+    }
+
+    private void UpdateFinalPanel(Text coinsFinalText, Text scoreFinalText, GameObject panel)
+    {
+        // Mise à jour du panel de fin avec les scores et pièces cumulés
+        coinsFinalText.text = $"Pièces : {initialCoins} (+{coins - initialCoins})";
+        scoreFinalText.text = $"Score : {initialScore} (+{score - initialScore})";
+
+        // Sauvegarde les nouvelles valeurs
+        SavePlayerData();
+        
+        panel.SetActive(true);
         Time.timeScale = 0;
     }
 

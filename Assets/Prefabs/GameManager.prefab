@@ -52,6 +52,10 @@ MonoBehaviour:
   score: 0
   coinsText: {fileID: 0}
   scoreText: {fileID: 0}
-  rageEffectText: {fileID: 0}
+  coinsTextDefeat: {fileID: 0}
+  scoreTextDefeat: {fileID: 0}
+  coinsTextTimeOver: {fileID: 0}
+  scoreTextTimeOver: {fileID: 0}
   defeatPanel: {fileID: 0}
   timeOverPanel: {fileID: 0}
+  rageEffectText: {fileID: 0}
