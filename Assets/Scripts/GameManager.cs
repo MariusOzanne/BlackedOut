@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    #region Variables 
+
     [Header("Caracteristiques du joueur")]
     [Range(0, 100)] public int health;
     [Range(0, 100)] public int shield;
@@ -33,6 +35,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Text coinsText;
     [SerializeField] private Text scoreText;
+
+    [Header("Potion de rage UI")]
+    [SerializeField] private GameObject rageEffectUI;
     [SerializeField] private Text rageEffectText;
 
     [Header("Panel du joueur")]
@@ -42,6 +47,8 @@ public class GameManager : MonoBehaviour
     private Coroutine rageCoroutine;
     private float defaultSpeed;
     private int defaultDamage;
+
+    #endregion
 
     // On creee le patern singleton
     // Permettant d'acceder a un script a partir d'un autre script
@@ -171,12 +178,12 @@ public class GameManager : MonoBehaviour
     {
         if (timeLeft > 0)
         {
-            rageEffectText.text = "Rage : " + timeLeft.ToString("F2") + "s";
-            rageEffectText.gameObject.SetActive(true);
+            rageEffectText.text = timeLeft.ToString("F0") + " s";
+            rageEffectUI.SetActive(true);
         }
         else
         {
-            rageEffectText.gameObject.SetActive(false);
+            rageEffectUI.SetActive(false);
         }
     }
 }
