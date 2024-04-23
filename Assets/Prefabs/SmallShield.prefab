@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemsData: {fileID: 11400000, guid: 3a2523aff403c5843ba8c5e5f07002c7, type: 2}
-  itemsButton: {fileID: 2389451510055194521, guid: 2f83a8b4e811e9a469e670a9f169e5c8,
+  itemsButton: {fileID: 5102252659225175163, guid: 2f83a8b4e811e9a469e670a9f169e5c8,
     type: 3}
-  itemsText: {fileID: 2225741203770301337, guid: c60b8bf82c781e54faf20c733c670d5c,
+  itemsText: {fileID: 2201121313437610286, guid: c60b8bf82c781e54faf20c733c670d5c,
     type: 3}

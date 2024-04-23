@@ -8,5 +8,6 @@ public class ItemsData : ScriptableObject
     public string itemDescription;
     public int regenPts;
     public int shieldPts;
+    public float effectDuration;
     public GameObject itemPrefab;
 }

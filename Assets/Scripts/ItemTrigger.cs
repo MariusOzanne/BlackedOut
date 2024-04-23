@@ -50,12 +50,12 @@ public class ItemTrigger : MonoBehaviour
                 GameManager.Instance.AddShield(itemsData.shieldPts);
                 break;
             case "Rage":
-                GameManager.Instance.ActivateRageMode();
+                GameManager.Instance.ActivateRageMode(itemsData);
                 break;
         }
 
-        // Désactive l'item et masque le bouton une fois l'item ramassé
-        items.SetActive(false);
+        // Détruit l'item et masque le bouton une fois l'item ramassé
+        Destroy(items);
         itemsButton.SetActive(false);
     }
 }

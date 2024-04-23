@@ -33,10 +33,15 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Text coinsText;
     [SerializeField] private Text scoreText;
-    
+    [SerializeField] private Text rageEffectText;
+
     [Header("Panel du joueur")]
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject timeOverPanel;
+
+    private Coroutine rageCoroutine;
+    private float defaultSpeed;
+    private int defaultDamage;
 
     // On creee le patern singleton
     // Permettant d'acceder a un script a partir d'un autre script
@@ -52,6 +57,9 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);      // On la detruit si y'en a trop (car un singleton doit etre unique)
         }
+
+        defaultSpeed = speed;
+        defaultDamage = damage;
     }
 
     private void Start()
@@ -64,21 +72,6 @@ public class GameManager : MonoBehaviour
     {
         shield += amount;
         shield = Mathf.Min(shield, health);
-    }
-
-    public void ActivateRageMode()
-    {
-        speed *= 1.5f;
-        damage += 20;
-
-        StartCoroutine(ResetRageMode());
-    }
-
-    private IEnumerator ResetRageMode()
-    {
-        yield return new WaitForSeconds(10);
-        speed /= 1.5f;
-        damage -= 20;
     }
 
     public void TakeDamage(int amount)
@@ -132,5 +125,58 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void ActivateRageMode(ItemsData itemData)
+    {
+        if (rageCoroutine != null)
+        {
+            StopCoroutine(rageCoroutine);
+            ResetRageEffects(); // Reset les effets pour éviter de les cumuler
+        }
+
+        rageCoroutine = StartCoroutine(RageMode(itemData.effectDuration));
+    }
+
+    private IEnumerator RageMode(float duration)
+    {
+        ApplyRageEffects();
+
+        float timeLeft = duration;
+        
+        while (timeLeft > 0)
+        {
+            UpdateRageEffectUI(timeLeft);
+            timeLeft -= Time.deltaTime;
+            yield return null;
+        }
+
+        ResetRageEffects();
+        UpdateRageEffectUI(0);
+    }
+
+    private void ApplyRageEffects()
+    {
+        speed = defaultSpeed * 1.5f;
+        damage = defaultDamage + 20;
+    }
+
+    private void ResetRageEffects()
+    {
+        speed = defaultSpeed;
+        damage = defaultDamage;
+    }
+
+    private void UpdateRageEffectUI(float timeLeft)
+    {
+        if (timeLeft > 0)
+        {
+            rageEffectText.text = "Rage : " + timeLeft.ToString("F2") + "s";
+            rageEffectText.gameObject.SetActive(true);
+        }
+        else
+        {
+            rageEffectText.gameObject.SetActive(false);
+        }
     }
 }
