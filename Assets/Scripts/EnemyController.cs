@@ -26,6 +26,10 @@ public class EnemyController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = enemyData.speed;
         anim = GetComponent<Animation>();
+        enemyData.WizardSource = gameObject.AddComponent<AudioSource>();
+        enemyData.WizardSource.clip = enemyData.wizardnoiseSound;
+        enemyData.WizardSource.volume = 0.5f;
+        enemyData.WizardSource.playOnAwake = false;
     }
 
     void Update()
@@ -56,6 +60,7 @@ public class EnemyController : MonoBehaviour
                 if (Time.time >= nextAttackTime)
                 {
                     Attack();
+                    enemyData.WizardSource.Play();
                     nextAttackTime = Time.time + enemyData.attackCooldown;
                 }
             }
@@ -132,7 +137,7 @@ public class EnemyController : MonoBehaviour
         navMeshAgent.enabled = false;
         // Jouer l'animation de mort
         anim.Play("dead");
-
+        
         // Gestion des pièces à lâcher
         int coinsToDrop = Random.Range(enemyData.minCoins, enemyData.maxCoins + 1);
         for (int i = 0; i < coinsToDrop; i++)
@@ -149,6 +154,12 @@ public class EnemyController : MonoBehaviour
         // Incrémentation du score
         GameManager.Instance.score += enemyData.scoreValue;
         GameManager.Instance.UpdateScore();
+
+        
+        enemyData.EnemySource = gameObject.AddComponent<AudioSource>();
+        enemyData.EnemySource.clip = enemyData.enemySound;
+        enemyData.EnemySource.playOnAwake = false;
+        enemyData.EnemySource.Play();
 
         yield return new WaitForSeconds(2f);
         Destroy(gameObject);

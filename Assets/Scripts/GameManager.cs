@@ -51,6 +51,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject defeatPanel;
     [SerializeField] private GameObject timeOverPanel;
 
+<<<<<<< Updated upstream
     [Header("Interface utilisateur de l'effet de rage")]
     [SerializeField] private Text rageEffectText;
     [SerializeField] private GameObject rageEffectUI;
@@ -59,6 +60,10 @@ public class GameManager : MonoBehaviour
     private Coroutine rageCoroutine;
     private float defaultSpeed;
     private int defaultDamage;
+=======
+    public AudioClip backgroundMusic;
+    private AudioSource musicSource;
+>>>>>>> Stashed changes
 
     // On creee le patern singleton
     // Permettant d'acceder a un script a partir d'un autre script
@@ -85,6 +90,13 @@ public class GameManager : MonoBehaviour
         LoadPlayerData(); // Charge les données au démarrage
         UpdateCoinCount();
         UpdateScore();
+
+        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSource.loop = true; 
+        musicSource.clip = backgroundMusic; 
+        musicSource.playOnAwake = true; 
+        musicSource.volume = 0.2f; 
+        musicSource.Play();
     }
 
     public void SavePlayerData()
@@ -151,6 +163,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    private void ShowDefeatPanel()
+    {
+        musicSource.Stop();
+        defeatPanel.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void ShowTimeOverPanel()
+    {
+        musicSource.Stop();
+        timeOverPanel.SetActive(true);
+        Time.timeScale = 0;
+    }
+
+>>>>>>> Stashed changes
     public void UpdateCoinCount()
     {
         coinsText.text = coins.ToString();
@@ -187,7 +216,9 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1;
+        musicSource.Stop();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
     }
 
     public void ActivateRageMode(ItemsData itemData)

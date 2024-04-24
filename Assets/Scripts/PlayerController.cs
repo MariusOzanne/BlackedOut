@@ -22,10 +22,25 @@ public class PlayerController : MonoBehaviour
     private float lastYRotation;
     private float lastFireTime;
 
+    public AudioClip shootSound;
+    private AudioSource ShootAudio;
+    public AudioClip walkSound;
+    private AudioSource WalkAudio;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+
+        ShootAudio = gameObject.AddComponent<AudioSource>();
+        ShootAudio.clip = shootSound;
+        ShootAudio.playOnAwake = false;
+
+        WalkAudio = gameObject.AddComponent<AudioSource>();
+        WalkAudio.clip = walkSound;
+        WalkAudio.volume = 0.3f;
+        WalkAudio.playOnAwake = false;
+        
     }
 
     private void Update()
@@ -64,15 +79,23 @@ public class PlayerController : MonoBehaviour
         float currentSpeed = GameManager.Instance.speed;
         rb.velocity = new Vector3(moveDirection.x * currentSpeed, rb.velocity.y, moveDirection.z * currentSpeed);
 
+        
         // Si le joueur se déplace, active l'animation de marche
         if (moveDirection.magnitude > 0)
         {
             animator.SetBool("isWalking", true);
+            
         }
         else
         {
             animator.SetBool("isWalking", false);
+            if (walkSound != null && WalkAudio != null)
+            {
+                WalkAudio.Play();
+                WalkAudio.loop = true;
+            }
         }
+        
     }
 
     private void Rotate()
@@ -120,6 +143,12 @@ public class PlayerController : MonoBehaviour
 
                 // Détruit la balle après un certain temps
                 Destroy(bullet, 5f);
+            }
+
+            if (shootSound != null && ShootAudio != null)
+            {
+                // Jouer le son de tir
+                ShootAudio.Play();
             }
         }
     }

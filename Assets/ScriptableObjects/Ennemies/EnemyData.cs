@@ -12,6 +12,10 @@ public class EnemyData : ScriptableObject
     public int damage;
     public float attackCooldown;
     public GameObject enemyPrefab;
+    public AudioClip enemySound;
+    public AudioSource EnemySource;
+    public AudioClip wizardnoiseSound;
+    public AudioSource WizardSource;
 
     [Header("Récompenses")]
     public int minCoins;
@@ -35,6 +39,8 @@ public class EnemyData : ScriptableObject
         clone.minCoins = this.minCoins;
         clone.maxCoins = this.maxCoins;
         clone.scoreValue = this.scoreValue;
+        clone.enemySound = this.enemySound;
+        clone.wizardnoiseSound = this.wizardnoiseSound;
         return clone;
     }
 }

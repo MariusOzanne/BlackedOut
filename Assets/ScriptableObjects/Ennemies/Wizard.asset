@@ -20,6 +20,8 @@ MonoBehaviour:
   attackCooldown: 1.5
   enemyPrefab: {fileID: 1000011592443590, guid: cebe9eaf887c5944f95c8c1382cd119d,
     type: 3}
+  enemySound: {fileID: 8300000, guid: 96ff7587104e17145bfdf0a4dc389ab2, type: 3}
+  EnemySource: {fileID: 0}
   minCoins: 1
   maxCoins: 5
   scoreValue: 100
