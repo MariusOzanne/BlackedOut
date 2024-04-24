@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
     [Header("Interface utilisateur de l'effet de rage")]
     [SerializeField] private Text rageEffectText;
     [SerializeField] private GameObject rageEffectUI;
+    [SerializeField] private GameObject rageParticle;
 
     private Coroutine rageCoroutine;
     private float defaultSpeed;
@@ -173,8 +174,8 @@ public class GameManager : MonoBehaviour
     private void UpdateFinalPanel(Text coinsFinalText, Text scoreFinalText, GameObject panel)
     {
         // Mise à jour du panel de fin avec les scores et pièces cumulés
-        coinsFinalText.text = $"Pièces : {initialCoins} (+{coins - initialCoins})";
-        scoreFinalText.text = $"Score : {initialScore} (+{score - initialScore})";
+        coinsFinalText.text = $" : {initialCoins} (+{coins - initialCoins})";
+        scoreFinalText.text = $" : {initialScore} (+{score - initialScore})";
 
         // Sauvegarde les nouvelles valeurs
         SavePlayerData();
@@ -197,12 +198,12 @@ public class GameManager : MonoBehaviour
             ResetRageEffects(); // Reset les effets pour éviter de les cumuler
         }
 
-        rageCoroutine = StartCoroutine(RageMode(itemData.effectDuration));
+        rageCoroutine = StartCoroutine(RageMode(itemData, itemData.effectDuration));
     }
 
-    private IEnumerator RageMode(float duration)
+    private IEnumerator RageMode(ItemsData itemData, float duration)
     {
-        ApplyRageEffects();
+        ApplyRageEffects(itemData);
 
         float timeLeft = duration;
 
@@ -217,10 +218,10 @@ public class GameManager : MonoBehaviour
         UpdateRageEffectUI(0);
     }
 
-    private void ApplyRageEffects()
+    private void ApplyRageEffects(ItemsData itemData)
     {
-        speed = defaultSpeed * 1.5f;
-        damage = defaultDamage + 20;
+        speed = defaultSpeed * itemData.speedBoost;
+        damage = defaultDamage + itemData.damageBoost;
     }
 
     private void ResetRageEffects()
@@ -235,10 +236,12 @@ public class GameManager : MonoBehaviour
         {
             rageEffectText.text = timeLeft.ToString("F0") + " s";
             rageEffectUI.SetActive(true);
+            rageParticle.SetActive(true);
         }
         else
         {
             rageEffectUI.SetActive(false);
+            rageParticle.SetActive(false);
         }
     }
 }

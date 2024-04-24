@@ -16,8 +16,8 @@ MonoBehaviour:
   maxHealth: 100
   health: 100
   speed: 3
-  damage: 10
-  attackCooldown: 5
+  damage: 3
+  attackCooldown: 1.5
   enemyPrefab: {fileID: 1000011592443590, guid: cebe9eaf887c5944f95c8c1382cd119d,
     type: 3}
   minCoins: 1

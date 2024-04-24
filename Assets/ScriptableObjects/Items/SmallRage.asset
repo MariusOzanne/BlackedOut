@@ -14,7 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Rage
   itemDescription: "R\xE9cup\xE9rer Rage"
+  itemPrefab: {fileID: 146310, guid: f244d85ca954f4336a1a7595053efbfc, type: 3}
+  particlePrefab: {fileID: 7155335147208632822, guid: 97c43495f80a3244fad1301dfafbe252,
+    type: 3}
   regenPts: 0
   shieldPts: 0
+  speedBoost: 1.5
+  damageBoost: 20
   effectDuration: 10
-  itemPrefab: {fileID: 146310, guid: f244d85ca954f4336a1a7595053efbfc, type: 3}

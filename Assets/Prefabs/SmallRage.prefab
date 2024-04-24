@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2396436}
   - component: {fileID: -8361363865272232672}
   - component: {fileID: 5053651098432186889}
+  - component: {fileID: 441995318447895079}
   m_Layer: 0
   m_Name: SmallRage
   m_TagString: Untagged
@@ -123,3 +124,25 @@ MonoBehaviour:
     type: 3}
   itemsText: {fileID: 2201121313437610286, guid: c60b8bf82c781e54faf20c733c670d5c,
     type: 3}
+--- !u!64 &441995318447895079
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 146310}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 881b79b521986c645ab4c56f03a2d214, type: 3}
