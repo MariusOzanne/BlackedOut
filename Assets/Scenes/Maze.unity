@@ -484,6 +484,10 @@ MonoBehaviour:
     type: 3}
   mazeWidth: 25
   mazeDepth: 25
+  ground: {fileID: 1850419453}
+  bigRoomSize: 10
+  averageRoomSize: 7.5
+  smallRoomSize: 6
 --- !u!4 &1712056038
 Transform:
   m_ObjectHideFlags: 0

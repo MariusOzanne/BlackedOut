@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3162000826073529205}
   - component: {fileID: 1869059443559911760}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FrontWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2180464697935487954}
   - component: {fileID: 278335406256676361}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: BackWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2846576906028823194}
   - component: {fileID: 5399036785163207861}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LeftWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 8868488443605294525}
   - component: {fileID: 8506724602587438819}
   - component: {fileID: 8766107113010606213}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -255,7 +255,7 @@ GameObject:
   m_Component:
   - component: {fileID: 581294927911434853}
   - component: {fileID: 8212086829719730777}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: MazeCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -299,6 +299,8 @@ MonoBehaviour:
   frontWall: {fileID: 1738961337891516392}
   backWall: {fileID: 2568928363270077493}
   unvisitedBlock: {fileID: 8049692738728243254}
+  x: 0
+  z: 0
 --- !u!1 &4753914188164183275
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,7 +312,7 @@ GameObject:
   - component: {fileID: 8856805366886484182}
   - component: {fileID: 4730482995834780043}
   - component: {fileID: 113517001892392832}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -393,7 +395,7 @@ GameObject:
   - component: {fileID: 1436217850870272187}
   - component: {fileID: 6252809620872787987}
   - component: {fileID: 5480334658556717351}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -475,7 +477,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4001173649928079836}
   - component: {fileID: 9219706887093387456}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RightWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -530,7 +532,7 @@ GameObject:
   - component: {fileID: 4610170249988127508}
   - component: {fileID: 2281785114004745803}
   - component: {fileID: 3313569796066144668}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -613,7 +615,7 @@ GameObject:
   - component: {fileID: 1201589256522438556}
   - component: {fileID: 7555174059130820684}
   - component: {fileID: 7917020747615194300}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Graphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -695,7 +697,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5776575904871388726}
   - component: {fileID: 6240949794965988768}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: UnvisitedBlack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
