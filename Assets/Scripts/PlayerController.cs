@@ -109,8 +109,34 @@ public class PlayerController : MonoBehaviour
 
             if (bulletRb != null)
             {
+<<<<<<< Updated upstream
                 // Désactive la gravité pour la balle
                 bulletRb.useGravity = false;
+=======
+                Debug.Log("Bullet hit: " + hitInfo.collider.gameObject.name);
+                Debug.DrawLine(bulletSpawnPoint.position, hitInfo.point, Color.green, 0.1f);
+                EnemyController enemy = hitInfo.collider.GetComponent<EnemyController>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(5);
+                    Debug.Log("HIT");
+                }
+                PortalController portal = hitInfo.collider.GetComponent<PortalController>();
+                if (portal != null)
+                {
+                    // Call a method in the PortalController to handle whatever action you need
+                    portal.TakeDamage(5);
+                    Debug.Log("HIT");
+                }
+                tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point               
+            }
+            else
+            {
+                Vector3 endPoint = bulletSpawnPoint.position + fireDirection * 100f;
+                Debug.DrawLine(bulletSpawnPoint.position, endPoint, Color.red, 0.1f);
+                tracerEndPoint = endPoint; // Set tracer end point to the maximum range
+            }
+>>>>>>> Stashed changes
 
                 // Utilise la direction avant de la balle pour la force
                 Vector3 fireDirection = bullet.transform.up;
