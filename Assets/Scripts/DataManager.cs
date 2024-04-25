@@ -14,6 +14,11 @@ public class DataManager
     {
         CreateScriptableObject<EnemyData>("EnemyData", "Ennemies");
     }
+    [MenuItem("Blacked Out/Create Weapon Data")]
+    public static void CreateWeapon()
+    {
+        CreateScriptableObject<WeaponData>("WeaponData", "Weapon");
+    }
 
     private static void CreateScriptableObject<T>(string fileName, string folderName) where T : ScriptableObject
     {

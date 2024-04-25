@@ -25,7 +25,6 @@ public class EnemyController : MonoBehaviour
     private bool playerInAttackRange;
     private Animation anim;
     private bool isDead = false;
-
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
