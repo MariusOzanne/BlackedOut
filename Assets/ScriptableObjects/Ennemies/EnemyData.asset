@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6492a95a5add3cf49abb6ca049e30e08, type: 3}
-  m_Name: Wizard
+  m_Name: EnemyData
   m_EditorClassIdentifier: 
-  enemyName: Wizard
-  maxHealth: 100
-  health: -585
-  speed: 0
-  damage: 10
-  attackCooldown: 5
-  enemyPrefab: {fileID: 1000011592443590, guid: cebe9eaf887c5944f95c8c1382cd119d,
+  enemyName: 
+  maxHealth: 10
+  health: 10
+  speed: 5.08
+  damage: 29
+  attackCooldown: 0
+  enemyPrefab: {fileID: 2907765055921955234, guid: 6fd05c1e8cf45e7478019968ec46c6e3,
     type: 3}
-  minCoins: 1
-  maxCoins: 5
-  scoreValue: 100
+  minCoins: 0
+  maxCoins: 0
+  scoreValue: 0
