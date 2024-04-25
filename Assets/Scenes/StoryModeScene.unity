@@ -6714,11 +6714,23 @@ PrefabInstance:
       propertyPath: m_Constraints
       value: 112
       objectReference: {fileID: 0}
+    - target: {fileID: 8736622817662399961, guid: 31bdf8eb5c2f2a545956e0763ca4c455,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6350047450885355216, guid: 31bdf8eb5c2f2a545956e0763ca4c455, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31bdf8eb5c2f2a545956e0763ca4c455, type: 3}
+--- !u!1 &1797074678 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8736622817662399961, guid: 31bdf8eb5c2f2a545956e0763ca4c455,
+    type: 3}
+  m_PrefabInstance: {fileID: 1797074677}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1797493666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6877,6 +6889,11 @@ PrefabInstance:
       propertyPath: rageEffectUI
       value: 
       objectReference: {fileID: 1259534856}
+    - target: {fileID: 5281417463435727887, guid: 08004b2c96fe47e488f19cabe30070ef,
+        type: 3}
+      propertyPath: rageParticle
+      value: 
+      objectReference: {fileID: 1797074678}
     - target: {fileID: 5281417463435727887, guid: 08004b2c96fe47e488f19cabe30070ef,
         type: 3}
       propertyPath: timeOverPanel

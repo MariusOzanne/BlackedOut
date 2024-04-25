@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6492a95a5add3cf49abb6ca049e30e08, type: 3}
-  m_Name: Skeleton
+  m_Name: Slime
   m_EditorClassIdentifier: 
-  enemyName: Skeleton
-  maxHealth: 100
-  health: 100
+  enemyName: Slime
+  maxHealth: 50
+  health: 50
   speed: 5
-  damage: 2
+  damage: 1
   attackCooldown: 2
-  enemyPrefab: {fileID: 7649550389304180080, guid: 6b4461680ebbbba4bbd8c1e2cfd89dc9,
+  enemyPrefab: {fileID: 6705402075998324148, guid: d941199d4a58fcb45adc75ea8e37c42c,
     type: 3}
   minCoins: 1
   maxCoins: 3
