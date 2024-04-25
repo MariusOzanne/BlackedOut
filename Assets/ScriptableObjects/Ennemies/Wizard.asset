@@ -20,6 +20,14 @@ MonoBehaviour:
   attackCooldown: 5
   enemyPrefab: {fileID: 1000011592443590, guid: cebe9eaf887c5944f95c8c1382cd119d,
     type: 3}
+  enemySound: {fileID: 8300000, guid: b405bafc122e13846819111f267fb269, type: 3}
+  EnemySource: {fileID: 0}
+  wizardnoiseSound: {fileID: 8300000, guid: 8ff975234ca672d4ba0c7c23ef9b8368, type: 3}
+  WizardSource: {fileID: 0}
+  slimeNoiseSound: {fileID: 0}
+  SlimeNoiseSource: {fileID: 0}
+  slimeAttackSound: {fileID: 0}
+  SlimeAttackSource: {fileID: 0}
   minCoins: 1
   maxCoins: 5
   scoreValue: 100

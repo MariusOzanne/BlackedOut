@@ -31,6 +31,25 @@ public class EnemyController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = enemyData.speed;
         anim = GetComponent<Animation>();
+
+        //Wizard Sound
+        enemyData.WizardSource = gameObject.AddComponent<AudioSource>();
+        enemyData.WizardSource.clip = enemyData.wizardnoiseSound;
+        enemyData.WizardSource.volume = 0.5f;
+        enemyData.WizardSource.playOnAwake = false;
+
+        enemyData.EnemySource = gameObject.AddComponent<AudioSource>();
+        enemyData.EnemySource.clip = enemyData.enemySound;
+        enemyData.EnemySource.playOnAwake = false;
+
+        enemyData.SlimeAttackSource = gameObject.AddComponent<AudioSource>();
+        enemyData.SlimeAttackSource.clip = enemyData.slimeAttackSound;
+        enemyData.SlimeAttackSource.volume = 0.5f;
+        enemyData.SlimeAttackSource.playOnAwake = false;
+
+        enemyData.SlimeNoiseSource = gameObject.AddComponent<AudioSource>();
+        enemyData.SlimeNoiseSource.clip = enemyData.slimeNoiseSound;
+        enemyData.SlimeNoiseSource.playOnAwake = false;
     }
 
     void Update()
@@ -61,6 +80,19 @@ public class EnemyController : MonoBehaviour
                 if (Time.time >= nextAttackTime)
                 {
                     Attack();
+
+                    if (enemyData.wizardnoiseSound != null && enemyData.WizardSource != null)
+                    {
+                        // Play sound
+                        enemyData.WizardSource.Play();
+                    }
+
+                    if (enemyData.slimeAttackSound != null && enemyData.SlimeAttackSource != null)
+                    {
+                        // Play sound
+                        enemyData.SlimeAttackSource.Play();
+                    }
+
                     nextAttackTime = Time.time + enemyData.attackCooldown;
                 }
             }
@@ -154,6 +186,19 @@ public class EnemyController : MonoBehaviour
         // Incrémentation du score
         GameManager.Instance.score += enemyData.scoreValue;
         GameManager.Instance.UpdateScore();
+
+        if (enemyData.enemySound != null && enemyData.EnemySource != null)
+        {
+            // Play sound
+            enemyData.EnemySource.Play();
+        }
+
+        if (enemyData.slimeNoiseSound != null && enemyData.SlimeNoiseSource != null)
+        {
+            // Play sound
+            enemyData.SlimeNoiseSource.Play();
+        }
+
 
         // Si c'est un slime original
         if (!hasDuplicated)

@@ -46,13 +46,26 @@ public class PlayerController : MonoBehaviour
     public WeaponData Shotgun;
     public int assaultRifleDamage = 10;
 
-
+    // Sound
+    public AudioClip shootSound;
+    private AudioSource ShootAudio;
+    public AudioClip walkSound;
+    private AudioSource WalkAudio;
 
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+
+        ShootAudio = gameObject.AddComponent<AudioSource>();
+        ShootAudio.clip = shootSound;
+        ShootAudio.playOnAwake = false;
+
+        WalkAudio = gameObject.AddComponent<AudioSource>();
+        WalkAudio.clip = walkSound;
+        WalkAudio.volume = 0.3f;
+        WalkAudio.playOnAwake = false;
     }
 
     private void Update()
@@ -104,6 +117,11 @@ public class PlayerController : MonoBehaviour
         else
         {
             animator.SetBool("isWalking", false);
+            if (walkSound != null && WalkAudio != null)
+            {
+                WalkAudio.Play();
+                WalkAudio.loop = true;
+            }
         }
     }
 
@@ -168,6 +186,12 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("HIT");
                 }
                 tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point
+
+                if (shootSound != null && ShootAudio != null)
+                {
+                    // Play sound
+                    ShootAudio.Play();
+                }
             }
             else
             {

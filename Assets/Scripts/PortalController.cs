@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PortalController : MonoBehaviour
@@ -22,10 +23,20 @@ public class PortalController : MonoBehaviour
     private float nextWaveTime;
     private int enemiesSpawned;
 
+    public AudioClip portalAudio;
+    private AudioSource PortalSource;
+
     void Start()
     {
         currentHealth = portalHealth;
         nextWaveTime = Time.time + waveInterval;
+
+        PortalSource = gameObject.AddComponent<AudioSource>();
+        PortalSource.loop = true;
+        PortalSource.clip = portalAudio;
+        PortalSource.playOnAwake = true;
+        PortalSource.volume = 0.3f;
+        PortalSource.Play();
     }
 
     void Update()
@@ -78,6 +89,8 @@ public class PortalController : MonoBehaviour
     {
         GameManager.Instance.score += 500; // Incrémenter le score
         GameManager.Instance.UpdateScore(); // Mettre à jour le score dans l'UI
+
+        PortalSource.Stop();
         Destroy(gameObject); // Détruire le portail
     }
 }

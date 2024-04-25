@@ -8,9 +8,16 @@ public class Coin : MonoBehaviour
     private float attractSpeed = 5f;
     private float rotationSpeed = 100f;
 
+    public AudioClip coinSound;
+    private AudioSource CoinAudio;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        CoinAudio = gameObject.AddComponent<AudioSource>();
+        CoinAudio.clip = coinSound;
+        CoinAudio.playOnAwake = false;
     }
 
     void Update()
@@ -30,6 +37,8 @@ public class Coin : MonoBehaviour
         // Vérifie si la pièce entre en collision avec le joueur
         if (other.gameObject.CompareTag("Player"))
         {
+            CoinAudio.Play();
+
             GameManager.Instance.coins++;  // Incrémenter le nombre de pièces dans le GameManager
             GameManager.Instance.UpdateCoinCount();  // Mettre à jour l'affichage des pièces
 
