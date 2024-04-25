@@ -235,6 +235,134 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1515437592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1515437593}
+  - component: {fileID: 1515437594}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1515437593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515437592}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.15, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1515437594
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1515437592}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 6cb61e86c2e7c97439abc6a06ea95c4b, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.05
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &1811415973 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 81604158111448585, guid: cdb83a17c3a002846a0fad47608e2e1f,
@@ -440,6 +568,16 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 1136382219430797391, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_Name
+      value: Devs
+      objectReference: {fileID: 0}
+    - target: {fileID: 1136757015811126633, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1260545099887679852, guid: cdb83a17c3a002846a0fad47608e2e1f,
         type: 3}
       propertyPath: m_Pivot.x
@@ -540,10 +678,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2029660107799411664, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 246.821
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029660107799411664, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 89
+      objectReference: {fileID: 0}
     - target: {fileID: 2648815579329619167, guid: cdb83a17c3a002846a0fad47608e2e1f,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3204626566434149838, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 175.5341
+      objectReference: {fileID: 0}
+    - target: {fileID: 3204626566434149838, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -196.92947
       objectReference: {fileID: 0}
     - target: {fileID: 4174467714049331327, guid: cdb83a17c3a002846a0fad47608e2e1f,
         type: 3}
@@ -554,6 +712,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5224026443626200635, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_Text
+      value: Business Managers
+      objectReference: {fileID: 0}
+    - target: {fileID: 5324030156074939659, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_Name
+      value: TitleBS
+      objectReference: {fileID: 0}
+    - target: {fileID: 6838482601205800139, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_Name
+      value: BS
+      objectReference: {fileID: 0}
+    - target: {fileID: 8861290930348569490, guid: cdb83a17c3a002846a0fad47608e2e1f,
+        type: 3}
+      propertyPath: m_Text
+      value: "D\xE9veloppeurs"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -616,3 +794,4 @@ SceneRoots:
   - {fileID: 1250737395144102455}
   - {fileID: 5053025763474802160}
   - {fileID: 1908037845}
+  - {fileID: 1515437593}

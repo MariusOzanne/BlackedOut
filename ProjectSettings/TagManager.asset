@@ -4,9 +4,11 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Item
   - Enemy
   - Portal
+  - NPC
+  - ItemsText
+  - ItemsButton
   layers:
   - Default
   - TransparentFX
@@ -14,7 +16,7 @@ TagManager:
   - ZoneAttack
   - Water
   - UI
-  - 
+  - Walls
   - 
   - 
   - 

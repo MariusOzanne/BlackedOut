@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private int damage;
-
     private float fixedYPosition;
 
     private void Start()
@@ -25,7 +23,7 @@ public class Bullet : MonoBehaviour
             EnemyController enemy = other.GetComponent<EnemyController>();
             if (enemy != null)
             {
-                enemy.TakeDamage(damage);
+                enemy.TakeDamage(GameManager.Instance.damage);
                 Destroy(gameObject);
             }
         }
@@ -35,7 +33,7 @@ public class Bullet : MonoBehaviour
             PortalController portal = other.GetComponent<PortalController>();
             if (portal != null)
             {
-                portal.TakeDamage(damage);
+                portal.TakeDamage(GameManager.Instance.damage);
                 Destroy(gameObject);
             }
         }

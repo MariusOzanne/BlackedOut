@@ -18,10 +18,6 @@ public class EnemyData : ScriptableObject
     public int maxCoins;
     public int scoreValue;
 
-    /// <summary>
-    /// Crée une copie de cet EnemyData avec une nouvelle santé maximale et des valeurs réinitialisées.
-    /// </summary>
-    /// <returns>Une nouvelle instance de EnemyData avec des valeurs copiées.</returns>
     public EnemyData Clone()
     {
         var clone = ScriptableObject.CreateInstance<EnemyData>();

@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69db6f5fc539bf24082639d386056da8, type: 3}
   m_Name: SmallHeal
   m_EditorClassIdentifier: 
-  itemName: SmallHeal
-  itemDescription: 
-  regenPts: 15
+  itemName: Heal
+  itemDescription: "R\xE9cup\xE9rer Soin"
+  regenPts: 20
   shieldPts: 0
-  itemPrefab: {fileID: 0}
+  effectDuration: 0
+  itemPrefab: {fileID: 7351022686652170608, guid: fb5a9652227c545d98a413cd73b80b69,
+    type: 3}
