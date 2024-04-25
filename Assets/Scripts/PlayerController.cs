@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO.Pipes;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -167,6 +168,14 @@ public class PlayerController : MonoBehaviour
                     enemy.TakeDamage(5);
                     Debug.Log("HIT");
                 }
+                PortalController portal = hitInfo.collider.GetComponent<PortalController>();
+                if (portal != null)
+                {
+                    // Call a method in the PortalController to handle whatever action you need
+                    portal.TakeDamage(5);
+                    Debug.Log("HIT");
+                }
+
                 tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point
             }
             else
@@ -215,6 +224,13 @@ public class PlayerController : MonoBehaviour
                         enemy.TakeDamage(5);
                         Debug.Log("HIT");
                     }
+                    PortalController portal = hitInfo.collider.GetComponent<PortalController>();
+                    if (portal != null)
+                    {
+                        // Call a method in the PortalController to handle whatever action you need
+                        portal.TakeDamage(5);
+                        Debug.Log("HIT");
+                    }
                     tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point
                 }
                 else
@@ -256,6 +272,13 @@ public class PlayerController : MonoBehaviour
                 if (enemy != null)
                 {
                     enemy.TakeDamage(10);
+                    Debug.Log("HIT");
+                }
+                PortalController portal = hitInfo.collider.GetComponent<PortalController>();
+                if (portal != null)
+                {
+                    // Call a method in the PortalController to handle whatever action you need
+                    portal.TakeDamage(5);
                     Debug.Log("HIT");
                 }
                 tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point
