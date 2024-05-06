@@ -6,242 +6,162 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    private static GameManager _Instance;
+    public static GameManager Instance { get; private set; } // Singleton pour accéder à l'instance de GameManager de partout
 
-    // On creee une variable publique Instance pour pouvoir acceder a la variable privee _Instance
-    public static GameManager Instance
-    {
-        get
-        {
-            if (_Instance == null)
-            {
-                _Instance = new GameManager();
-            }
-            return _Instance;
-        }
-    }
+    [Header("Player Stats")]
+    public float speed; // Vitesse de déplacement du joueur
+    public int damage; // Dégâts infligés par le joueur
 
-    [Header("Caracteristiques du joueur")]
-    [Range(0, 100)] public int health;
-    [Range(0, 100)] public int shield;
-    public float speed;
-    public int damage;
+    [Header("Player Scores")]
+    public int coins; // Nombre de pièces collectées par le joueur
+    public int score; // Score total du joueur
 
-    [Header("Score du joueur")]
-    public int coins;
-    public int score;
+    private int initialCoins; // Initialisation du compteur de pièces pour les comparaisons
+    private int initialScore; // Initialisation du compteur de score pour les comparaisons
 
-    // Variables pour sauvegarder les valeurs de début de partie
-    private int initialCoins;
-    private int initialScore;
+    [SerializeField] private Text coinsText; // UI pour afficher les pièces
+    [SerializeField] private Text scoreText; // UI pour afficher le score
 
-    [SerializeField] private Text coinsText;
-    [SerializeField] private Text scoreText;
+    [Header("Defeat UI")]
+    [SerializeField] private Text defeatCoinsText; // Texte pour les pièces sur l'écran de défaite
+    [SerializeField] private Text defeatScoreText; // Texte pour le score sur l'écran de défaite
+    [SerializeField] private GameObject defeatPanel; // Panneau UI montré lors de la défaite
 
-    // Références pour les Texts dans les panels
-    [Header("Textes pour le panneau de défaite")]
-    [SerializeField] private Text coinsTextDefeat;
-    [SerializeField] private Text scoreTextDefeat;
+    [Header("Time Over UI")]
+    [SerializeField] private Text timeOverCoinsText; // Texte pour les pièces sur l'écran de temps écoulé
+    [SerializeField] private Text timeOverScoreText; // Texte pour le score sur l'écran de temps écoulé
+    [SerializeField] private GameObject timeOverPanel; // Panneau UI montré quand le temps est écoulé
 
-    [Header("Textes pour le panneau du temps écoulé")]
-    [SerializeField] private Text coinsTextTimeOver;
-    [SerializeField] private Text scoreTextTimeOver;
+    [Header("Rage Mode UI")]
+    [SerializeField] private Text rageEffectText; // Texte pour afficher la durée du mode rage
+    [SerializeField] private GameObject rageEffectUI; // UI pour le mode rage
+    [SerializeField] private GameObject rageParticle; // Effets visuels pour le mode rage
 
-    [Header("Panels du joueur")]
-    [SerializeField] private GameObject defeatPanel;
-    [SerializeField] private GameObject timeOverPanel;
+    private Coroutine rageModeCoroutine; // Coroutine pour gérer la durée du mode rage
+    private float defaultSpeed; // Vitesse par défaut pour restaurer après le mode rage
+    private int defaultDamage; // Dégâts par défaut pour restaurer après le mode rage
 
-    [Header("Interface utilisateur de l'effet de rage")]
-    [SerializeField] private Text rageEffectText;
-    [SerializeField] private GameObject rageEffectUI;
-    [SerializeField] private GameObject rageParticle;
-
-    private Coroutine rageCoroutine;
-    private float defaultSpeed;
-    private int defaultDamage;
-
-    // On creee le patern singleton
-    // Permettant d'acceder a un script a partir d'un autre script
     private void Awake()
     {
-        // Si l'instance n'a pas ete attribue
-        if (_Instance == null)
+        // Singleton pattern
+        if (Instance == null)
         {
-            _Instance = this;   // La variable _Instance = la classe GameManager
-            // DontDestroyOnLoad(gameObject);   // Garde le GameManager persistant entre les scènes
+            Instance = this;
+            // DontDestroyOnLoad(gameObject);
         }
-        // Sinon
         else
         {
-            Destroy(gameObject);      // On la detruit si y'en a trop (car un singleton doit etre unique)
+            Destroy(gameObject);
         }
 
-        defaultSpeed = speed;
-        defaultDamage = damage;
+        defaultSpeed = speed; // Sauvegarde de la vitesse initiale
+        defaultDamage = damage; // Sauvegarde des dégâts initiaux
     }
 
     private void Start()
     {
-        LoadPlayerData(); // Charge les données au démarrage
-        UpdateCoinCount();
-        UpdateScore();
+        FindObjectOfType<SaveSystem>().LoadData(); // Chargement des données du joueur
+        initialCoins = coins; // Définit les pièces initiales après le chargement
+        initialScore = score; // Définit le score initial après le chargement
+        UpdateCoinsUI(); // Mise à jour de l'affichage des pièces
+        UpdateScoreUI(); // Mise à jour de l'affichage du score
     }
 
-    public void SavePlayerData()
+    public void UpdateCoinsUI()
     {
-        PlayerPrefs.SetInt("PlayerScore", score);
-        PlayerPrefs.SetInt("PlayerCoins", coins);
-        PlayerPrefs.Save();
+        coinsText.text = coins.ToString(); // Mise à jour de l'UI des pièces
     }
 
-    private void LoadPlayerData()
+    public void UpdateScoreUI()
     {
-        score = PlayerPrefs.GetInt("PlayerScore", 0);
-        coins = PlayerPrefs.GetInt("PlayerCoins", 0);
-        initialScore = score;
-        initialCoins = coins;
+        scoreText.text = score.ToString(); // Mise à jour de l'UI du score
     }
 
-    public void ResetPlayerData()
+    public void ShowDefeatPanel()
     {
-        PlayerPrefs.DeleteKey("PlayerScore");
-        PlayerPrefs.DeleteKey("PlayerCoins");
-
-        score = 0;
-        coins = 0;
-
-        initialScore = 0;
-        initialCoins = 0;
-
-        UpdateCoinCount();
-        UpdateScore();
-
-        SavePlayerData();
-    }
-
-    public void AddShield(int amount)
-    {
-        shield += amount;
-        shield = Mathf.Min(shield, health);
-    }
-
-    public void TakeDamage(int amount)
-    {
-        if (shield > 0)
-        {
-            int damageToShield = Mathf.Min(amount, shield);
-            shield -= damageToShield;
-            amount -= damageToShield;
-        }
-
-        if (amount > 0)
-        {
-            health -= amount;
-        }
-
-        CheckPlayerDefeat();
-    }
-
-    public void CheckPlayerDefeat()
-    {
-        if (health <= 0)
-        {
-            SavePlayerData(); // Sauvegarde les données avant de montrer le panneau de défaite
-            ShowDefeatPanel();
-        }
-    }
-
-    public void UpdateCoinCount()
-    {
-        coinsText.text = coins.ToString();
-    }
-
-    public void UpdateScore()
-    {
-        scoreText.text = score.ToString();
-    }
-
-    private void ShowDefeatPanel()
-    {
-        UpdateFinalPanel(coinsTextDefeat, scoreTextDefeat, defeatPanel);
+        UpdateFinalPanel(defeatCoinsText, defeatScoreText, defeatPanel); // Mise à jour du panneau de défaite
     }
 
     public void ShowTimeOverPanel()
     {
-        UpdateFinalPanel(coinsTextTimeOver, scoreTextTimeOver, timeOverPanel);
+        UpdateFinalPanel(timeOverCoinsText, timeOverScoreText, timeOverPanel); // Mise à jour du panneau de temps écoulé
     }
 
-    private void UpdateFinalPanel(Text coinsFinalText, Text scoreFinalText, GameObject panel)
+    private void UpdateFinalPanel(Text coinsText, Text scoreText, GameObject panel)
     {
-        // Mise à jour du panel de fin avec les scores et pièces cumulés
-        coinsFinalText.text = $" : {initialCoins} (+{coins - initialCoins})";
-        scoreFinalText.text = $" : {initialScore} (+{score - initialScore})";
+        coinsText.text = $"{initialCoins} (+{coins - initialCoins})"; // Format de l'affichage des pièces
+        scoreText.text = $"{initialScore} (+{score - initialScore})"; // Format de l'affichage du score
 
-        // Sauvegarde les nouvelles valeurs
-        SavePlayerData();
+        FindObjectOfType<SaveSystem>().SaveData();
+
+        initialCoins = coins; // Met à jour les pièces initiales après la sauvegarde
+        initialScore = score; // Met à jour le score initial après la sauvegarde
 
         panel.SetActive(true);
-        Time.timeScale = 0;
+        Time.timeScale = 0; // Arrête le temps pour afficher le panneau
+    }
+
+    public void ResetScoresToDefault()
+    {
+        coins = 0; // Réinitialise les pièces à 0
+        score = 0; // Réinitialise le score à 0
+        initialCoins = 0; // Réinitialise les pièces initiales à 0
+        initialScore = 0; // Réinitialise le score initial à 0
+
+        UpdateCoinsUI(); // Mise à jour de l'UI des pièces
+        UpdateScoreUI(); // Mise à jour de l'UI du score
     }
 
     public void RestartGame()
     {
-        Time.timeScale = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1; // Restaure le temps normal
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // Recharge la scène actuelle
     }
 
-    public void ActivateRageMode(ItemsData itemData)
+    public void ActivateRageMode(ItemData itemData)
     {
-        if (rageCoroutine != null)
+        if (rageModeCoroutine != null)
         {
-            StopCoroutine(rageCoroutine);
-            ResetRageEffects(); // Reset les effets pour éviter de les cumuler
+            StopCoroutine(rageModeCoroutine);
+            ResetRageEffects(); // Réinitialisation des effets du mode rage précédent
         }
 
-        rageCoroutine = StartCoroutine(RageMode(itemData, itemData.effectDuration));
+        rageModeCoroutine = StartCoroutine(RageEffectCoroutine(itemData)); // Démarrage d'une nouvelle coroutine pour le mode rage
     }
 
-    private IEnumerator RageMode(ItemsData itemData, float duration)
+    private IEnumerator RageEffectCoroutine(ItemData itemData)
     {
-        ApplyRageEffects(itemData);
+        ApplyRageEffects(itemData); // Application des effets de rage
 
-        float timeLeft = duration;
+        float timeLeft = itemData.durationOfEffect; // Durée du mode rage
 
         while (timeLeft > 0)
         {
-            UpdateRageEffectUI(timeLeft);
-            timeLeft -= Time.deltaTime;
+            UpdateRageEffectUI(timeLeft); // Mise à jour de l'UI du mode rage
+            timeLeft -= Time.deltaTime; // Décompte du temps restant
             yield return null;
         }
 
-        ResetRageEffects();
-        UpdateRageEffectUI(0);
+        ResetRageEffects(); // Réinitialisation des effets une fois le mode rage terminé
+        UpdateRageEffectUI(0); // Mise à jour finale de l'UI du mode rage
     }
 
-    private void ApplyRageEffects(ItemsData itemData)
+    private void ApplyRageEffects(ItemData itemData)
     {
-        speed = defaultSpeed * itemData.speedBoost;
-        damage = defaultDamage + itemData.damageBoost;
+        speed = defaultSpeed * itemData.speedMultiplier; // Augmentation de la vitesse
+        damage = defaultDamage + itemData.additionalDamage; // Augmentation des dégâts
     }
 
     private void ResetRageEffects()
     {
-        speed = defaultSpeed;
-        damage = defaultDamage;
+        speed = defaultSpeed; // Restauration de la vitesse par défaut
+        damage = defaultDamage; // Restauration des dégâts par défaut
     }
 
     private void UpdateRageEffectUI(float timeLeft)
     {
-        if (timeLeft > 0)
-        {
-            rageEffectText.text = timeLeft.ToString("F0") + " s";
-            rageEffectUI.SetActive(true);
-            rageParticle.SetActive(true);
-        }
-        else
-        {
-            rageEffectUI.SetActive(false);
-            rageParticle.SetActive(false);
-        }
+        rageEffectText.text = timeLeft.ToString("F0") + " s"; // Affichage du temps restant en secondes
+        rageEffectUI.SetActive(timeLeft > 0); // Active l'UI si le mode rage est actif
+        rageParticle.SetActive(timeLeft > 0); // Active les particules si le mode rage est actif
     }
 }

@@ -1,102 +1,106 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO.Pipes;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Joystick setup")]
-    [SerializeField] private Joystick movementJoystick;
-    [SerializeField] private Joystick rotationJoystick;
-    [Header("Shooting setup")]    
-    [SerializeField] private Transform bulletSpawnPoint;
-    [SerializeField] private float fireThreshold;
-    //[SerializeField] private float fireRate;
-    [SerializeField] private int currentGunIndex = 0;
-    [SerializeField] private float maxAngleDeviation = 10f;
+    [SerializeField] private Joystick movementJoystick; // Joystick pour contrôler les mouvements
+    [SerializeField] private Joystick rotationJoystick; // Joystick pour contrôler la rotation
 
-    // Rigidbody and Animator components
+    [Header("Shooting setup")]
+    [SerializeField] private GameObject bulletPrefab; // Préfabriqué de la balle à tirer
+    [SerializeField] private Transform bulletSpawnPoint; // Point d'origine du tir
+    [SerializeField] private float fireThreshold; // Seuil de distance du joystick pour activer le tir
+    [SerializeField] private float fireRate; // Cadence de tir
+
+    // [SerializeField] private int currentGunIndex = 0;
+    // [SerializeField] private float maxAngleDeviation = 10f;
+
     private Rigidbody rb;
     private Animator animator;
+    private Health health;
 
-    // Movement and rotation directions
     private Vector3 moveDirection;
     private Vector3 rotationDirection;
 
-    // Last rotation Y-axis
     private float lastYRotation;
+    private float lastFireTime;
 
-    // Tracer related variables
+    /*
+
     private LineRenderer currentTracer;
     public LineRenderer tracerPrefab;
     private Vector3 tracerEndPoint;
-    private float lastFireTime;
     public float tracerWidth = 0.05f;
     public float maxTracerLength = 10f;
     public GameObject spotlightPrefab;
 
 
-    // Trail renderer variables
     public TrailRenderer trailPrefab;
     private TrailRenderer currentTrail;
     public float trailTime = 0.05f;
 
-    // Weapon data
     public WeaponData AssaultRifle;
     public WeaponData Shotgun;
     public int assaultRifleDamage = 10;
 
-
-
+    */
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>(); // Récupération du composant Rigidbody pour le mouvement physique
+        animator = GetComponent<Animator>(); // Récupération du composant Animator pour la gestion des animations
+        health = GetComponent<Health>(); // Récupération du composant Health pour gérer la santé du joueur
     }
 
     private void Update()
     {
-        ProcessInputs();
-        Rotate();
-        CheckFireCondition();
+        ProcessInputs(); // Traitement des entrées du joueur
+        Rotate(); // Rotation du personnage
+        CheckFireCondition(); // Vérification des conditions de tir
+
+        /*
+        
         if (Input.GetKeyDown(KeyCode.K))
         {
             SwitchGun();
             Debug.Log("switching");
         }
+
+        */
     }
 
     private void FixedUpdate()
     {
-        Move();
+        Move(); // Déplacement physique basé sur les inputs
     }
 
     private void ProcessInputs()
     {
-        // Utilise la position du movementJoystick pour définir la direction du mouvement
+        // Lecture des valeurs de déplacement du joystick et normalisation
         float moveX = movementJoystick.Horizontal;
         float moveZ = movementJoystick.Vertical;
         moveDirection = new Vector3(moveX, 0, moveZ).normalized;
 
-        // Utilise la position du rotationJoystick pour définir la direction de la rotation seulement si le joueur bouge le rotationJoystick
+        // Lecture des valeurs de rotation du joystick et calcul de l'angle de rotation
         if (rotationJoystick.Horizontal != 0 || rotationJoystick.Vertical != 0)
         {
             float rotateX = rotationJoystick.Horizontal;
             float rotateZ = rotationJoystick.Vertical;
             rotationDirection = new Vector3(rotateX, 0, rotateZ).normalized;
 
-            // Calcul de l'angle de rotation et stockage comme dernière rotation valide
             lastYRotation = Mathf.Atan2(rotationDirection.x, rotationDirection.z) * Mathf.Rad2Deg;
         }
     }
 
     private void Move()
     {
+        // Application de la vélocité basée sur la direction et la vitesse actuelle
         float currentSpeed = GameManager.Instance.speed;
         rb.velocity = new Vector3(moveDirection.x * currentSpeed, rb.velocity.y, moveDirection.z * currentSpeed);
 
-        // Si le joueur se déplace, active l'animation de marche
+        // Mise à jour de l'état de l'animation de marche
         if (moveDirection.magnitude > 0)
         {
             animator.SetBool("isWalking", true);
@@ -109,22 +113,24 @@ public class PlayerController : MonoBehaviour
 
     private void Rotate()
     {
+        // Application de la rotation calculée au personnage
         transform.rotation = Quaternion.Euler(0, lastYRotation, 0);
     }
 
-    private void SwitchGun()
-    {        
-        currentGunIndex = (currentGunIndex + 1) % 3;
-    }
-
-
     private void CheckFireCondition()
     {
+        // Calcul de la distance du joystick depuis le centre pour déterminer si le joueur est en train de viser
         float distanceFromCenter = Vector2.Distance(new Vector2(rotationJoystick.Horizontal, rotationJoystick.Vertical), Vector2.zero);
 
-        if (distanceFromCenter > fireThreshold)
-        {                    
-            // Call the appropriate method to fire the gun based on the current gun index
+        // Vérification de la condition de tir (distance et intervalle de temps depuis le dernier tir)
+        if (distanceFromCenter > fireThreshold && Time.time > lastFireTime + fireRate)
+        {
+            FireBullet();
+            lastFireTime = Time.time;
+            animator.SetBool("isShooting", true);
+
+            /*
+
             switch (currentGunIndex)
             {
                 case 0:
@@ -140,11 +146,58 @@ public class PlayerController : MonoBehaviour
                     Debug.LogError("Invalid gun index!");
                     break;
             }
+
+            */
         }
         else
         {
             animator.SetBool("isShooting", false);
         }
+    }
+
+    private void FireBullet()
+    {
+        // Vérification et instantiation de la balle
+        if (bulletPrefab && bulletSpawnPoint)
+        {
+            Quaternion bulletRotation = Quaternion.Euler(90, lastYRotation, 0);
+            GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletRotation);
+
+            Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
+
+            if (bulletRb != null)
+            {
+                // La balle ne subit pas la gravité
+                bulletRb.useGravity = false;
+
+                // Direction de tir basée sur l'orientation de la balle
+                Vector3 fireDirection = bullet.transform.up;
+
+                // Application de la force de tir
+                bulletRb.AddForce(fireDirection.normalized * 1000);
+
+                // Destruction de la balle après 5 secondes
+                Destroy(bullet, 5f);
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health.TakeDamage(damage); // Application des dégâts au joueur
+
+        // Vérifie si la santé du joueur est épuisée
+        if (health.currentHealth <= 0)
+        {
+            GameManager.Instance.ShowDefeatPanel(); // Affichage du panneau de défaite
+        }
+    }
+
+    /*
+
+    private void SwitchGun()
+    {
+        currentGunIndex = (currentGunIndex + 1) % 3;
     }
 
     private void FireGun1()
@@ -281,33 +334,5 @@ public class PlayerController : MonoBehaviour
 
     }
 
-        
-
-    //private void FireBullet()
-    //{      
-    //    if (bulletPrefab && bulletSpawnPoint)
-    //    {
-    //        // Instancie la balle au point de départ avec la rotation ajustée de 90 degrés en X
-    //        Quaternion bulletRotation = Quaternion.Euler(90, lastYRotation, 0);
-    //        GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletRotation);
-
-    //        // Obtient le Rigidbody de la balle
-    //        Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
-
-    //        if (bulletRb != null)
-    //        {
-    //            // Désactive la gravité pour la balle
-    //            bulletRb.useGravity = false;
-
-    //            // Utilise la direction avant de la balle pour la force
-    //            Vector3 fireDirection = bullet.transform.up;
-
-    //            // Applique une force à la balle dans la direction calculée
-    //            bulletRb.AddForce(fireDirection.normalized * 1000);
-
-    //            // Détruit la balle après un certain temps
-    //            Destroy(bullet, 5f);
-    //        }
-    //    }
-    //}
+    */
 }

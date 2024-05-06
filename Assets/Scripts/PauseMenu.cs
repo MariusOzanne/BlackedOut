@@ -5,26 +5,27 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject pauseMenuPanel;
+    [SerializeField] private SceneLoader sceneLoader;
 
     public void TogglePause()
     {
         if (Time.timeScale == 1)
         {
             Time.timeScale = 0;
-            pausePanel.SetActive(true);
+            pauseMenuPanel.SetActive(true);
         }
     }
 
-    public void ContinueGame()
+    public void ResumeGame()
     {
         Time.timeScale = 1;
-        pausePanel.SetActive(false);
+        pauseMenuPanel.SetActive(false);
     }
 
-    public void LoadMainMenu()
+    public void ReturnToMainMenu()
     {
-        Time.timeScale = 1;
-        SceneManager.LoadScene("MenuScene");
+        FindObjectOfType<SaveSystem>().SaveData();
+        sceneLoader.LoadSceneAsync(0);
     }
 }

@@ -4,80 +4,86 @@ using UnityEngine;
 
 public class PortalController : MonoBehaviour
 {
-    #region Variable setup
+    [Header("Enemy Types")]
+    [SerializeField] private List<EnemyData> enemyTypes; // Liste des types d'ennemis que le portail peut générer
 
-    [Header("Choix des ennemis apparaissant du portail")]
-    [SerializeField] private List<EnemyData> enemyTypes;
-    [Header("Vie du portail")]
-    public float portalHealth;
-    [Header("Setup des vagues")]
+    [Header("Wave Settings")]
     [SerializeField] private int enemiesPerWave; // Nombre d'ennemis par vague
-    [SerializeField] private float spawnInterval; // Intervalle entre les apparitions d'ennemis
+    [SerializeField] private float spawnInterval; // Intervalle entre les apparitions des ennemis
     [SerializeField] private float waveInterval; // Intervalle entre les vagues
-    
-    #endregion
-    
-    public float currentHealth;
-    
-    private float nextWaveTime;
-    private int enemiesSpawned;
 
-    void Start()
+    private float nextWaveTime; // Temps pour la prochaine vague
+    private int enemiesSpawned; // Nombre d'ennemis déjà apparus
+    private Health health; // Composant pour gérer la santé du portail
+
+    private void Start()
     {
-        currentHealth = portalHealth;
-        nextWaveTime = Time.time + waveInterval;
+        nextWaveTime = Time.time + waveInterval; // Initialisation du temps pour la prochaine vague
+        health = GetComponent<Health>(); // Récupération du composant Health
     }
 
-    void Update()
+    private void Update()
     {
+        if (health.currentHealth <= 0)
+        {
+            return;
+        }
+
+        // Vérifie si le temps pour la prochaine vague est atteint
         if (Time.time >= nextWaveTime)
         {
-            StartCoroutine(SpawnWave());
-            nextWaveTime = Time.time + waveInterval;
+            StartCoroutine(SpawnWave()); // Démarre la coroutine pour générer une vague
+            nextWaveTime = Time.time + waveInterval; // Réinitialise le temps pour la prochaine vague
         }
     }
 
-    IEnumerator SpawnWave()
+    private IEnumerator SpawnWave()
     {
         enemiesSpawned = 0;
+
+        // Continue de générer des ennemis jusqu'à atteindre le nombre requis par vague
         while (enemiesSpawned < enemiesPerWave)
         {
-            // Choix aléatoire de type d'ennemi dans la liste enemyTypes
-            int randomIndex = Random.Range(0, enemyTypes.Count);
-            EnemyData originalData = enemyTypes[randomIndex];
-
-            // Cloner les données d'ennemi pour chaque nouveau spawn
-            EnemyData clonedData = originalData.Clone();
-
-            // Faire apparaître l'ennemi correspondant au type choisi
-            GameObject enemyPrefab = originalData.enemyPrefab;
-            GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity);
-
-            // Assigner les données clonées à l'ennemi
-            EnemyController enemyController = newEnemy.GetComponent<EnemyController>();
-            if (enemyController != null)
-            {
-                enemyController.SetEnemyData(clonedData);
-            }
-
-            enemiesSpawned++;
-            yield return new WaitForSeconds(spawnInterval);
+            SpawnEnemy();
+            yield return new WaitForSeconds(spawnInterval); // Attend entre chaque apparition
         }
     }
 
-    public void TakeDamage(float damage)
+    private void SpawnEnemy()
     {
-        currentHealth -= damage;
-        if (currentHealth <= 0)
+        // Sélection aléatoire d'un type d'ennemi à générer
+        int randomIndex = Random.Range(0, enemyTypes.Count);
+        EnemyData originalData = enemyTypes[randomIndex];
+
+        EnemyData clonedData = originalData.Clone(); // Clone les données pour éviter les références partagées
+
+        GameObject enemyPrefab = originalData.prefab;
+        GameObject newEnemy = Instantiate(enemyPrefab, transform.position, Quaternion.identity); // Création de l'ennemi
+
+        // Configuration de l'ennemi généré
+        EnemyController enemyController = newEnemy.GetComponent<EnemyController>();
+        if (enemyController != null)
         {
-            DestroyPortal();
+            enemyController.SetEnemyData(clonedData);
+        }
+
+        enemiesSpawned++; // Incrémente le compteur d'ennemis générés
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health.TakeDamage(damage);
+        
+        if (health.currentHealth <= 0)
+        {
+            DestroyPortal(); // Détruit le portail si sa santé tombe à zéro
         }
     }
 
     private void DestroyPortal()
     {
-        GameManager.Instance.score += 500; // Incrémenter le score
-        GameManager.Instance.UpdateScore(); // Mettre à jour le score dans l'UI
-        Destroy(gameObject); // Détruire le portail
+        GameManager.Instance.score += 500; // Augmente le score du joueur
+        GameManager.Instance.UpdateScoreUI(); // Met à jour l'UI du score
+        Destroy(gameObject); // Détruit le portail
     }
 }

@@ -1,3 +1,5 @@
+/*
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,3 +34,5 @@ public class TorchLight : MonoBehaviour
         lineRenderer.SetPosition(1, endPosition);
     }
 }
+
+*/

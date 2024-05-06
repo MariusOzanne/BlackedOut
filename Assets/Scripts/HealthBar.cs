@@ -5,123 +5,41 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    [Header("Configuration de la barre de vie")]
-    [SerializeField] private bool isPlayer;
-    [SerializeField] private bool isPortal;
-    [SerializeField] private Slider lifeBar;
-    [SerializeField] private Slider shieldBar;
-    [SerializeField] private Gradient gradient;
+    [SerializeField] private Slider slider; // Slider UI pour représenter visuellement la santé
+    [SerializeField] private Gradient gradient; // Gradient de couleur pour le remplissage du slider selon la santé
 
-    private Image fill;
-    private int maxHealth;
-    private PortalController portalController;
+    private Image fill; // L'image de remplissage du slider
 
-    void Start()
+    private void Awake()
     {
-        if (lifeBar == null)
+        // Initialisation du composant Image pour le remplissage du slider
+        if (slider != null && slider.fillRect != null)
         {
-            Debug.LogError("Slider lifeBar n'est pas assigné sur " + gameObject.name);
-            return;
-        }
-
-        fill = lifeBar.fillRect.GetComponent<Image>();
-        if (fill == null)
-        {
-            Debug.LogError("Image fill n'est pas trouvée sur le Slider " + gameObject.name);
-            return;
-        }
-
-        SetupHealthBar();
-    }
-
-    private void SetupHealthBar()
-    {
-        if (isPlayer)
-        {
-            maxHealth = GameManager.Instance.health;
-            lifeBar.maxValue = maxHealth;
-            lifeBar.value = maxHealth;
-            if (shieldBar != null)
-            {
-                shieldBar.maxValue = maxHealth;
-                shieldBar.value = GameManager.Instance.shield;
-            }
-        }
-        else if (isPortal)
-        {
-            portalController = GetComponentInParent<PortalController>();
-            if (portalController != null)
-            {
-                maxHealth = (int)portalController.portalHealth;
-                lifeBar.maxValue = maxHealth;
-                lifeBar.value = maxHealth;
-            }
-            else
-            {
-                Debug.LogError("PortalController non trouvé sur " + gameObject.name);
-                return;
-            }
-        }
-        else
-        {
-            EnemyData enemyData = GetComponentInParent<EnemyController>()?.enemyData;
-            if (enemyData != null)
-            {
-                maxHealth = enemyData.maxHealth;
-                lifeBar.maxValue = maxHealth;
-                lifeBar.value = enemyData.health;
-            }
-            else
-            {
-                Debug.LogError("EnemyData non trouvé sur " + gameObject.name);
-                return;
-            }
-        }
-
-        fill.color = gradient.Evaluate(1f);
-    }
-
-    void Update()
-    {
-        if (isPlayer)
-        {
-            UpdatePlayerHealthBar();
-        }
-        else if (isPortal && portalController != null)
-        {
-            UpdatePortalHealthBar();
-        }
-        else
-        {
-            UpdateEnemyHealthBar();
+            fill = slider.fillRect.GetComponent<Image>();
         }
     }
 
-    private void UpdatePlayerHealthBar()
+    // Met à jour la couleur du remplissage en fonction de la valeur normalisée du slider
+    private void UpdateColor()
     {
-        lifeBar.value = GameManager.Instance.health;
-        fill.color = gradient.Evaluate(lifeBar.normalizedValue);
-
-        if (shieldBar != null)
+        if (fill != null)
         {
-            shieldBar.value = GameManager.Instance.shield;
+            fill.color = gradient.Evaluate(slider.normalizedValue);
         }
     }
 
-    private void UpdatePortalHealthBar()
+    // Définit la santé maximale pour le slider et met à jour la valeur et la couleur
+    public void SetMaxHealth(int health)
     {
-        int currentHealth = (int)portalController.currentHealth;
-        lifeBar.value = currentHealth;
-        fill.color = gradient.Evaluate(lifeBar.normalizedValue);
+        slider.maxValue = health;
+        slider.value = health;
+        UpdateColor();
     }
 
-    private void UpdateEnemyHealthBar()
+    // Met à jour la valeur actuelle de la santé sur le slider et ajuste la couleur
+    public void SetHealth(int health)
     {
-        EnemyData enemyData = GetComponentInParent<EnemyController>()?.enemyData;
-        if (enemyData != null)
-        {
-            lifeBar.value = enemyData.health;
-            fill.color = gradient.Evaluate(lifeBar.normalizedValue);
-        }
+        slider.value = health;
+        UpdateColor();
     }
 }

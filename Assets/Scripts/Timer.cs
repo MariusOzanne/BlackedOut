@@ -5,28 +5,29 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] private Text timerText;
-    [SerializeField][Range(0,900)] private float timeRemaining;
+    [SerializeField] private Text countdownText; // Référence au texte d'affichage du chronomètre
+    [SerializeField][Range(0, 900)] private float remainingTime; // Temps restant en secondes
 
-    void Update()
+    private void Update()
     {
-        if (timeRemaining >= 0f)
+        // Si le temps restant est supérieur à 0, le décrémente et met à jour l'affichage
+        if (remainingTime > 0f)
         {
-            timeRemaining -= Time.deltaTime;
-
-            UpdateTimerText();
+            remainingTime -= Time.deltaTime;
+            UpdateCountdownDisplay();
         }
+        // Sinon, affiche un panneau indiquant que le temps est écoulé
         else
         {
             GameManager.Instance.ShowTimeOverPanel();
         }
     }
 
-    void UpdateTimerText()
+    // Met à jour l'affichage du chronomètre
+    private void UpdateCountdownDisplay()
     {
-        int minutes = Mathf.FloorToInt(timeRemaining / 60f);
-        int seconds = Mathf.FloorToInt(timeRemaining % 60f);
-
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+        int minutes = Mathf.FloorToInt(remainingTime / 60f);
+        int seconds = Mathf.FloorToInt(remainingTime % 60f);
+        countdownText.text = $"{minutes:00}:{seconds:00}";
     }
 }

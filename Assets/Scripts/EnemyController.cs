@@ -1,106 +1,219 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    [Header("Statistiques de l'ennemi")]
-    public EnemyData enemyData;
-    [Header("Zone de détection de l'ennemi")]
-    [SerializeField] private GameObject detectionZone; // Zone de détection de déplacement
-    [SerializeField] private GameObject attackZone; // Zone de détection d'attaque
+    [Header("Enemy Stats")]
+    public EnemyData enemyData; // Données spécifiques à l'ennemi comme la santé, la vitesse, etc.
 
-    [Header("Prefab de la pièce")]
-    [SerializeField] private GameObject coinPrefab;
+    [Header("Detection Zones")]
+    [SerializeField] private GameObject detectionZone; // Zone de détection de présence du joueur
+    [SerializeField] private GameObject attackZone; // Zone d'attaque où l'ennemi peut effectuer une attaque
 
-    [Header("Variables unique du slime")]
-    [SerializeField] private float duplicationRadius = 0.25f;
-    [SerializeField] private int numberOfDuplicates = 2;
-    [SerializeField] private float sizeReductionFactor = 2f;
-    private bool hasDuplicated = false;
+    [Header("Loot")]
+    [SerializeField] private GameObject coinPrefab; // Préfabriqué pour la pièce de monnaie à larguer à la mort
+
+    [Header("Slime Specific")]
+    [SerializeField] private float duplicationRadius; // Rayon pour la duplication des slimes
+    [SerializeField] private int numberOfDuplicates; // Nombre de duplications
+    [SerializeField] private float sizeReductionFactor; // Facteur de réduction de taille pour chaque duplication
+    private bool hasDuplicated = false; // Contrôle si la duplication a déjà eu lieu
 
     private Transform player;
+    private PlayerController playerController;
     private NavMeshAgent navMeshAgent;
     private float nextAttackTime;
     private bool playerInAttackRange;
-    private Animation anim;
+    private Animation animator;
+    private Health health;
     private bool isDead = false;
-    void Start()
+
+    private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        navMeshAgent = GetComponent<NavMeshAgent>();
-        navMeshAgent.speed = enemyData.speed;
-        anim = GetComponent<Animation>();
+        player = GameObject.FindGameObjectWithTag("Player").transform; // Récupération de la référence du joueur
+        playerController = player.GetComponent<PlayerController>();
+        navMeshAgent = GetComponent<NavMeshAgent>(); // Accès au composant de navigation mesh
+        navMeshAgent.speed = enemyData.speed; // Définition de la vitesse de l'agent
+        animator = GetComponent<Animation>(); // Accès au composant d'animation
+        health = GetComponent<Health>();
+
+        // Initialise la santé maximale et actuelle de l'ennemi en fonction des données de l'ennemi
+        health.maxHealth = enemyData.maxHealth;
+        health.currentHealth = enemyData.health;
+        health.healthBar.SetMaxHealth(enemyData.maxHealth);
     }
 
-    void Update()
+    private void Update()
     {
-        if (isDead)
-            return;
-
-        // Si le joueur est dans la zone de détection de déplacement
-        if (detectionZone.GetComponent<Collider>().bounds.Contains(player.position))
+        if (isDead) // Arrête la mise à jour si l'ennemi est mort
         {
-            if (!playerInAttackRange)
-                // Jouer l'animation de déplacement
-                anim.CrossFade("move_forward");
-
-            // Si le joueur est dans la zone d'attaque
-            if (attackZone.GetComponent<Collider>().bounds.Contains(player.position))
-            {
-                // Arrête le mouvement de l'ennemi
-                navMeshAgent.isStopped = true;
-                if (!playerInAttackRange)
-                {
-                    // Jouer l'animation d'attaque
-                    anim.CrossFade("attack_short_001");
-                    playerInAttackRange = true;
-                }
-
-                // Attaque
-                if (Time.time >= nextAttackTime)
-                {
-                    Attack();
-                    nextAttackTime = Time.time + enemyData.attackCooldown;
-                }
-            }
-            else
-            {
-                // Reprend le mouvement vers le joueur
-                navMeshAgent.isStopped = false;
-                navMeshAgent.SetDestination(player.position);
-                playerInAttackRange = false;
-            }
+            return;
         }
+
+        MoveAndDetectPlayer(); // Fonction de déplacement et de détection du joueur
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
-        // Si le joueur entre dans la zone de détection d'attaque
+        // Vérifie si le joueur entre dans la zone d'attaque
         if (other.CompareTag("Player") && other.gameObject == attackZone)
         {
             playerInAttackRange = true;
         }
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
-        // Si le joueur quitte la zone de détection d'attaque
+        // Vérifie si le joueur sort de la zone d'attaque
         if (other.CompareTag("Player") && other.gameObject == attackZone)
         {
             playerInAttackRange = false;
         }
     }
 
-    void Attack()
+    private void MoveAndDetectPlayer()
     {
-        // Appliquer les dégâts au joueur
-        GameManager.Instance.TakeDamage(enemyData.damage);
+        // Vérifie si le joueur est dans la zone de détection
+        if (detectionZone.GetComponent<Collider>().bounds.Contains(player.position))
+        {
+            // Lance l'animation de mouvement si le joueur n'est pas en portée d'attaque
+            if (!playerInAttackRange)
+            {
+                animator.CrossFade("move_forward");
+            }
+
+            // Vérifie si le joueur est dans la zone d'attaque
+            if (attackZone.GetComponent<Collider>().bounds.Contains(player.position))
+            {
+                StopAndAttack(); // Fonction pour stopper et attaquer
+            }
+            else
+            {
+                navMeshAgent.isStopped = false; // L'agent de navigation continue de se déplacer
+                navMeshAgent.SetDestination(player.position); // Définit la destination de l'agent vers le joueur
+                playerInAttackRange = false; // Le joueur n'est plus considéré en portée d'attaque
+            }
+        }
+    }
+
+    private void StopAndAttack()
+    {
+        navMeshAgent.isStopped = true; // Arrête le mouvement de l'agent
+        
+        if (!playerInAttackRange)
+        {
+            animator.CrossFade("attack_short_001"); // Lance l'animation d'attaque
+            playerInAttackRange = true; // Le joueur est maintenant en portée d'attaque
+        }
+
+        if (Time.time >= nextAttackTime) // Vérifie si le temps est écoulé pour attaquer à nouveau
+        {
+            Attack(); // Exécute une attaque
+            nextAttackTime = Time.time + enemyData.attackCooldownTime; // Réinitialise le temps pour la prochaine attaque
+        }
+    }
+
+    private void Attack()
+    {
+        if (playerController != null)
+        {
+            playerController.TakeDamage(enemyData.damage); // Applique des dégâts au joueur
+        }
+    }
+
+    private IEnumerator Die()
+    {
+        isDead = true;
+        navMeshAgent.enabled = false;
+        animator.Play("dead"); // Joue l'animation de mort
+
+        // Désactive tous les colliders sur l'ennemi pour éviter des interactions inutiles
+        foreach (var collider in GetComponents<Collider>())
+        {
+            collider.enabled = false;
+        }
+        foreach (var collider in GetComponentsInChildren<Collider>())
+        {
+            collider.enabled = false;
+        }
+
+        DropLoot(); // Largue des objets
+        GameManager.Instance.score += enemyData.scoreValue; // Augmente le score du joueur
+        GameManager.Instance.UpdateScoreUI(); // Met à jour l'interface utilisateur du score
+
+        // Duplique l'ennemi s'il s'agit d'un slime et n'a pas encore été dupliqué
+        if (!hasDuplicated && (enemyData.name == "Slime" || enemyData.name == "KingSlime"))
+        {
+            DuplicateSlime();
+            hasDuplicated = true;
+        }
+
+        yield return new WaitForSeconds(2f); // Attend 2 secondes
+        Destroy(gameObject); // Détruit l'objet ennemi
+    }
+
+    private void DropLoot()
+    {
+        // Détermine le nombre de pièces à larguer
+        int coinsToDrop = Random.Range(enemyData.minCoins, enemyData.maxCoins + 1);
+
+        // Crée chaque pièce à une position aléatoire autour de l'ennemi
+        for (int i = 0; i < coinsToDrop; i++)
+        {
+            Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 2;
+            spawnPosition.y = 1;
+
+            Quaternion spawnRotation = Quaternion.Euler(-90, Random.Range(0, 360), 0);
+            Instantiate(coinPrefab, spawnPosition, spawnRotation);
+        }
+    }
+
+    private void DuplicateSlime()
+    {
+        // Calcule l'angle et la position pour chaque duplication
+        float angleIncrement = 360f / numberOfDuplicates;
+        float initialAngleOffset = Random.Range(0f, 360f);
+
+        for (int i = 0; i < numberOfDuplicates; i++)
+        {
+            float angle = (i * angleIncrement + initialAngleOffset) * Mathf.Deg2Rad;
+            Vector3 offset = new Vector3(Mathf.Cos(angle) * duplicationRadius, 0f, Mathf.Sin(angle) * duplicationRadius);
+            GameObject duplicate = Instantiate(enemyData.prefab, transform.position + offset, Quaternion.identity);
+            duplicate.transform.localScale /= sizeReductionFactor; // Réduit la taille du duplicata
+
+            // Configurer les données de l'ennemi duplicata et marquer comme déjà dupliqué
+            EnemyController enemyController = duplicate.GetComponent<EnemyController>();
+            if (enemyController != null)
+            {
+                EnemyData duplicateEnemyData = enemyData.Clone();
+                enemyController.SetEnemyData(duplicateEnemyData);
+                enemyController.hasDuplicated = true;
+            }
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (isDead) // Ignore les dégâts si l'ennemi est déjà mort
+        {
+            return;
+        }
+
+        health.TakeDamage(damage); // Réduit la santé de l'ennemi
+
+        if (health.currentHealth <= 0 && !isDead) // Vérifie si l'ennemi doit mourir
+        {
+            StartCoroutine(Die()); // Déclenche la coroutine de mort
+        }
     }
 
     public void SetEnemyData(EnemyData data)
     {
-        enemyData = data;
+        enemyData = data; // Configure les données de l'ennemi
+
+        // S'assure que l'agent de navigation est configuré correctement
         if (navMeshAgent != null)
         {
             navMeshAgent.speed = enemyData.speed;
@@ -112,105 +225,6 @@ public class EnemyController : MonoBehaviour
             {
                 navMeshAgent.speed = enemyData.speed;
             }
-            else
-            {
-                Debug.LogError("NavMeshAgent non trouvé sur l'ennemi");
-            }
-        }
-    }
-
-    public void TakeDamage(int damage)
-    {
-        if (isDead)
-            return;
-
-        enemyData.health -= damage;
-        if (enemyData.health <= 0 && !isDead)
-        {
-            StartCoroutine(Die());
-        }
-    }
-
-    IEnumerator Die()
-    {
-        isDead = true;
-        navMeshAgent.enabled = false;
-        // Jouer l'animation de mort
-        anim.Play("dead");
-
-        // Gestion des pièces à lâcher
-        int coinsToDrop = Random.Range(enemyData.minCoins, enemyData.maxCoins + 1);
-        for (int i = 0; i < coinsToDrop; i++)
-        {
-            // Position aléatoire autour de l'ennemi
-            Vector3 spawnPosition = transform.position + Random.insideUnitSphere * 2;
-            spawnPosition.y = 1;
-
-            // Appliquer une rotation initiale de -90 degrés autour de l'axe X et créer une rotation initiale autour de l'axe Y
-            Quaternion spawnRotation = Quaternion.Euler(-90, Random.Range(0, 360), 0);
-            Instantiate(coinPrefab, spawnPosition, spawnRotation);
-        }
-
-        // Incrémentation du score
-        GameManager.Instance.score += enemyData.scoreValue;
-        GameManager.Instance.UpdateScore();
-
-        // Si c'est un slime original
-        if (!hasDuplicated)
-        {
-            // Duplication en Slime
-            if (gameObject.CompareTag("Enemy") && (enemyData.enemyName == "Slime" || enemyData.enemyName == "KingSlime"))
-            {
-                DuplicateSlime();
-            }
-
-            // Marquer que le slime a été dupliqué
-            hasDuplicated = true;
-        }
-
-        yield return new WaitForSeconds(2f);
-        Destroy(gameObject);
-    }
-
-    private void DuplicateSlime()
-    {
-        // Ne duplique que si ce n'est pas déjà fait
-        if (!hasDuplicated)
-        {
-            float angleIncrement = 360f / numberOfDuplicates;
-            float initialAngleOffset = Random.Range(0f, 360f); // Offset aléatoire pour l'angle initial
-
-            for (int i = 0; i < numberOfDuplicates; i++)
-            {
-                float angle = (i * angleIncrement + initialAngleOffset) * Mathf.Deg2Rad;
-                Vector3 offset = new Vector3(Mathf.Cos(angle) * duplicationRadius, 0f, Mathf.Sin(angle) * duplicationRadius);
-                GameObject duplicate = Instantiate(enemyData.enemyPrefab, transform.position + offset, Quaternion.identity);
-                duplicate.transform.localScale /= sizeReductionFactor;
-
-                // Ajustement de l'intensité de la lumière
-                Light duplicateLight = duplicate.GetComponentInChildren<Light>();
-                if (duplicateLight != null)
-                {
-                    duplicateLight.intensity = 0.5f; // Modifier l'intensité de la lumière, vous pouvez ajuster selon vos besoins
-                }
-
-                // Appliquer les données du Slime au duplicate
-                EnemyController enemyController = duplicate.GetComponent<EnemyController>();
-                if (enemyController != null)
-                {
-                    // Cloner l'EnemyData avant de l'appliquer au duplicate
-                    EnemyData duplicateEnemyData = enemyData.Clone();
-                    enemyController.SetEnemyData(duplicateEnemyData);
-                    enemyController.hasDuplicated = true; // Marquer que le duplicate ne peut pas dupliquer davantage
-                }
-                else
-                {
-                    Debug.LogError("EnemyController non trouvé sur le duplicate du Slime");
-                }
-            }
-
-            // Marquer que le slime a été dupliqué
-            hasDuplicated = true;
         }
     }
 }

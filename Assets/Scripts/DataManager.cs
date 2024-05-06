@@ -1,3 +1,5 @@
+/*
+
 using UnityEditor;
 using UnityEngine;
 
@@ -36,3 +38,5 @@ public class DataManager
         Selection.activeObject = newObject;
     }
 }
+
+*/

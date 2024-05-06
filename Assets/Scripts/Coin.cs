@@ -4,36 +4,39 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    private Transform player;
-    private float attractSpeed = 5f;
-    private float rotationSpeed = 100f;
+    private Transform player; // Référence au transform du joueur
 
-    void Start()
+    private float attractSpeed = 5f; // Vitesse à laquelle la pièce est attirée vers le joueur
+    private float rotationSpeed = 100f; // Vitesse de rotation de la pièce
+
+    private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player").transform; // Trouve le joueur par tag
     }
 
-    void Update()
+    private void Update()
     {
-        // Vérifie si la pièce est suffisamment proche pour être attirée vers le joueur
-        if (Vector3.Distance(transform.position, player.position) < 5f)  // Distance d'attraction
+        // Si la pièce est proche du joueur, elle est attirée vers lui
+        if (Vector3.Distance(transform.position, player.position) < 5f)
         {
             transform.position = Vector3.MoveTowards(transform.position, player.position, attractSpeed * Time.deltaTime);
         }
 
-        // Rotation continue pour l'animation
+        // Rotation de la pièce autour de son axe Y
         transform.Rotate(0, rotationSpeed * Time.deltaTime, 0, Space.World);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // Vérifie si la pièce entre en collision avec le joueur
+        // Si la pièce entre en collision avec le joueur, elle est collectée
         if (other.gameObject.CompareTag("Player"))
         {
-            GameManager.Instance.coins++;  // Incrémenter le nombre de pièces dans le GameManager
-            GameManager.Instance.UpdateCoinCount();  // Mettre à jour l'affichage des pièces
+            // Augmente le nombre de pièces et met à jour l'UI des pièces
+            GameManager.Instance.coins++;
+            GameManager.Instance.UpdateCoinsUI();
 
-            Destroy(gameObject);  // Détruire la pièce pour qu'elle disparaisse
+            // Détruit la pièce de la scène
+            Destroy(gameObject);
         }
     }
 }

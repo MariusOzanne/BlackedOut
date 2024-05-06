@@ -1,3 +1,4 @@
+/*
 
 using System.Collections;
 using System.Collections.Generic;
@@ -64,3 +65,5 @@ public class Slime : MonoBehaviour
         Destroy(gameObject);
     }
 }
+
+*/
