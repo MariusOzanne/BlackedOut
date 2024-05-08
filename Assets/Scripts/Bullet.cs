@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float fixedYPosition; // Position Y fixe pour que la balle se déplace seulement en X et Z
+    [HideInInspector] public int damage; // Dégâts infligés par le joueur
 
+    private float fixedYPosition; // Position Y fixe pour que la balle se déplace seulement en X et Z
+    
     private void Start()
     {
         fixedYPosition = transform.position.y; // Sauvegarde de la position Y initiale au démarrage
@@ -26,7 +28,7 @@ public class Bullet : MonoBehaviour
             EnemyController enemy = other.GetComponent<EnemyController>();
             if (enemy != null)
             {
-                enemy.TakeDamage(GameManager.Instance.damage); // Appel de la méthode de dégât sur l'ennemi
+                enemy.TakeDamage(damage); // Appel de la méthode de dégât sur l'ennemi
                 Destroy(gameObject); // Destruction de la balle après l'impact
             }
         }
@@ -38,7 +40,7 @@ public class Bullet : MonoBehaviour
             PortalController portal = other.GetComponent<PortalController>();
             if (portal != null)
             {
-                portal.TakeDamage(GameManager.Instance.damage); // Appel de la méthode de dégât sur le portail
+                portal.TakeDamage(damage); // Appel de la méthode de dégât sur le portail
                 Destroy(gameObject); // Destruction de la balle après l'impact
             }
         }

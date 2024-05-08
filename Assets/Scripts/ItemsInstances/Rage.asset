@@ -19,4 +19,4 @@ MonoBehaviour:
   shieldAmount: 0
   speedMultiplier: 2
   additionalDamage: 30
-  durationOfEffect: 10
+  durationOfEffect: 30

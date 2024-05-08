@@ -222,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 975f651ca85a51241a2a9542959674dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clearSavedDataButton: {fileID: 2044326950}
   qualitiesDropdown: {fileID: 2061157502}
   resolutionsDropdown: {fileID: 1037735658}
   audioMixer: {fileID: 24100000, guid: 1bdc325ea85ef1f4882d7964dd430f3b, type: 2}
@@ -6650,7 +6651,7 @@ GameObject:
   - component: {fileID: 1660187611}
   - component: {fileID: 1660187610}
   m_Layer: 5
-  m_Name: ClearDataText
+  m_Name: ClearSavedDataText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8569,7 +8570,7 @@ GameObject:
   - component: {fileID: 2044326951}
   - component: {fileID: 2044326950}
   m_Layer: 5
-  m_Name: ClearDataButton
+  m_Name: ClearSavedDataButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

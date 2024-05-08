@@ -9,49 +9,42 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Joystick rotationJoystick; // Joystick pour contrôler la rotation
 
     [Header("Shooting setup")]
-    [SerializeField] private GameObject bulletPrefab; // Préfabriqué de la balle à tirer
     [SerializeField] private Transform bulletSpawnPoint; // Point d'origine du tir
     [SerializeField] private float fireThreshold; // Seuil de distance du joystick pour activer le tir
-    [SerializeField] private float fireRate; // Cadence de tir
 
-    // [SerializeField] private int currentGunIndex = 0;
-    // [SerializeField] private float maxAngleDeviation = 10f;
+    [Header("Weapon System")]
+    [SerializeField] private WeaponData[] availableWeapons; // Tableau des données d'armes disponibles
+    [HideInInspector] public int currentWeaponIndex = 0; // Index de l'arme courante dans le tableau
+    [HideInInspector] public WeaponData currentWeapon; // Référence à l'arme courante
+    private float lastFireTime; // Dernier moment où l'arme a tiré
 
-    private Rigidbody rb;
-    private Animator animator;
-    private Health health;
+    [Header("Speed")]
+    public float speed; // Vitesse de déplacement du joueur
+    
+    [HideInInspector] public float defaultSpeed; // Vitesse par défaut pour restaurer après le mode rage
+    [HideInInspector] public int defaultDamage; // Dégâts par défaut pour restaurer après le mode rage
 
-    private Vector3 moveDirection;
-    private Vector3 rotationDirection;
+    private Rigidbody rb; // Composant Rigidbody pour le mouvement physique
+    private Animator animator; // Composant Animator pour la gestion des animations
+    private Health health; // Composant Health pour gérer la santé du joueur
 
-    private float lastYRotation;
-    private float lastFireTime;
+    private Vector3 moveDirection; // Direction de déplacement actuelle
+    private Vector3 rotationDirection; // Direction de rotation actuelle
 
-    /*
+    private float lastYRotation; // Dernier angle de rotation en degrés
 
-    private LineRenderer currentTracer;
-    public LineRenderer tracerPrefab;
-    private Vector3 tracerEndPoint;
-    public float tracerWidth = 0.05f;
-    public float maxTracerLength = 10f;
-    public GameObject spotlightPrefab;
-
-
-    public TrailRenderer trailPrefab;
-    private TrailRenderer currentTrail;
-    public float trailTime = 0.05f;
-
-    public WeaponData AssaultRifle;
-    public WeaponData Shotgun;
-    public int assaultRifleDamage = 10;
-
-    */
-
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>(); // Récupération du composant Rigidbody pour le mouvement physique
         animator = GetComponent<Animator>(); // Récupération du composant Animator pour la gestion des animations
         health = GetComponent<Health>(); // Récupération du composant Health pour gérer la santé du joueur
+
+        defaultSpeed = speed; // Sauvegarde de la vitesse initiale
+
+        if (availableWeapons.Length > 0)
+        {
+            InitializeWeapon(currentWeaponIndex); // Initialise avec l'index d'arme par défaut ou chargé
+        }
     }
 
     private void Update()
@@ -59,21 +52,22 @@ public class PlayerController : MonoBehaviour
         ProcessInputs(); // Traitement des entrées du joueur
         Rotate(); // Rotation du personnage
         CheckFireCondition(); // Vérification des conditions de tir
-
-        /*
-        
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            SwitchGun();
-            Debug.Log("switching");
-        }
-
-        */
     }
 
     private void FixedUpdate()
     {
         Move(); // Déplacement physique basé sur les inputs
+    }
+
+    public void InitializeWeapon(int weaponIndex)
+    {
+        // Vérifie si l'index spécifié est dans les limites du tableau des armes disponibles
+        if (weaponIndex >= 0 && weaponIndex < availableWeapons.Length)
+        {
+            currentWeaponIndex = weaponIndex; // Met à jour l'index courant de l'arme
+            currentWeapon = availableWeapons[weaponIndex]; // Met à jour l'arme courante
+            defaultDamage = currentWeapon.damage; // Sauvegarde des dégâts initiaux de l'arme
+        }
     }
 
     private void ProcessInputs()
@@ -97,18 +91,10 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         // Application de la vélocité basée sur la direction et la vitesse actuelle
-        float currentSpeed = GameManager.Instance.speed;
-        rb.velocity = new Vector3(moveDirection.x * currentSpeed, rb.velocity.y, moveDirection.z * currentSpeed);
+        rb.velocity = new Vector3(moveDirection.x * speed, rb.velocity.y, moveDirection.z * speed);
 
         // Mise à jour de l'état de l'animation de marche
-        if (moveDirection.magnitude > 0)
-        {
-            animator.SetBool("isWalking", true);
-        }
-        else
-        {
-            animator.SetBool("isWalking", false);
-        }
+        animator.SetBool("isWalking", moveDirection.magnitude > 0);
     }
 
     private void Rotate()
@@ -123,31 +109,11 @@ public class PlayerController : MonoBehaviour
         float distanceFromCenter = Vector2.Distance(new Vector2(rotationJoystick.Horizontal, rotationJoystick.Vertical), Vector2.zero);
 
         // Vérification de la condition de tir (distance et intervalle de temps depuis le dernier tir)
-        if (distanceFromCenter > fireThreshold && Time.time > lastFireTime + fireRate)
+        if (distanceFromCenter > fireThreshold && Time.time > lastFireTime + currentWeapon.fireRate)
         {
-            FireBullet();
+            FireWeapon();
             lastFireTime = Time.time;
             animator.SetBool("isShooting", true);
-
-            /*
-
-            switch (currentGunIndex)
-            {
-                case 0:
-                    FireGun1();
-                    break;
-                case 1:
-                    FireGun2();
-                    break;
-                case 2:
-                    FireGun3();
-                    break;
-                default:
-                    Debug.LogError("Invalid gun index!");
-                    break;
-            }
-
-            */
         }
         else
         {
@@ -155,31 +121,89 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void FireBullet()
+    private void FireWeapon()
     {
-        // Vérification et instantiation de la balle
-        if (bulletPrefab && bulletSpawnPoint)
+        // Vérifie si le point de tir et le préfab de la balle sont bien définis
+        if (bulletSpawnPoint == null || currentWeapon.bulletPrefab == null)
         {
-            Quaternion bulletRotation = Quaternion.Euler(90, lastYRotation, 0);
-            GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPoint.position, bulletRotation);
+            return;
+        }
 
+        // Calcule la rotation de la balle basée sur la rotation actuelle du joueur
+        Quaternion bulletRotation = Quaternion.Euler(90, lastYRotation, 0);
+        // Crée un nouvel objet balle à la position de tir avec la rotation calculée
+        GameObject bullet = Instantiate(currentWeapon.bulletPrefab, bulletSpawnPoint.position, bulletRotation);
+
+        // Récupère le composant Bullet de la nouvelle balle pour accéder à ses propriétés
+        Bullet bulletComponent = bullet.GetComponent<Bullet>();
+
+        if (bulletComponent != null)
+        {
+            // Définit les dégâts de la balle en fonction des dégâts définis dans les données de l'arme actuelle
+            bulletComponent.damage = currentWeapon.damage;
+
+            // Récupère le Rigidbody de la balle pour appliquer des forces
             Rigidbody bulletRb = bullet.GetComponent<Rigidbody>();
 
             if (bulletRb != null)
             {
-                // La balle ne subit pas la gravité
+                // Désactive la gravité pour la balle
                 bulletRb.useGravity = false;
 
-                // Direction de tir basée sur l'orientation de la balle
+                // Définit la direction du tir basée sur l'orientation de la balle
                 Vector3 fireDirection = bullet.transform.up;
 
-                // Application de la force de tir
-                bulletRb.AddForce(fireDirection.normalized * 1000);
+                // Applique la force de tir
+                bulletRb.AddForce(fireDirection.normalized * currentWeapon.speed, ForceMode.VelocityChange);
 
-                // Destruction de la balle après 5 secondes
-                Destroy(bullet, 5f);
+                // Détruit la balle après que celle-ci a parcouru sa portée maximale
+                Destroy(bullet, currentWeapon.range / currentWeapon.speed);
+            }
+
+            // Gère l'affichage du flash de tir au canon
+            if (currentWeapon.muzzleFlashPrefab != null)
+            {
+                GameObject muzzleFlash = Instantiate(currentWeapon.muzzleFlashPrefab, bulletSpawnPoint.position, Quaternion.identity);
+                Destroy(muzzleFlash, 0.2f); // Détruit l'effet de flash après un court instant
+            }
+
+            // Joue le son du tir si un AudioClip est assigné
+            if (currentWeapon.sound != null)
+            {
+                AudioSource.PlayClipAtPoint(currentWeapon.sound, bulletSpawnPoint.position);
             }
         }
+    }
+
+    public void ChangeWeapon()
+    {
+        currentWeapon.damage = defaultDamage; // Réinitialise les dégâts avant de changer d'arme pour s'assurer que les dégâts précédents ne sont pas conservés
+
+        currentWeaponIndex = (currentWeaponIndex + 1) % availableWeapons.Length; // Incrémente l'index de l'arme, boucle au début si nécessaire
+        currentWeapon = availableWeapons[currentWeaponIndex]; // Met à jour l'arme actuelle
+        defaultDamage = currentWeapon.damage; // Réinitialise les dégâts par défaut lors du changement d'arme
+
+        // Réapplique les effets de rage si nécessaire
+        if (GetComponent<RageManager>().isRageActive)
+        {
+            GetComponent<RageManager>().UpdateRageEffectsOnWeaponChange();
+        }
+    }
+
+    public void ResetSpeedAndDamage()
+    {
+        // Restaure la vitesse à sa valeur par défaut
+        speed = defaultSpeed;
+        // Restaure les dégâts de l'arme actuelle à leur valeur par défaut
+        currentWeapon.damage = defaultDamage;
+    }
+
+    public void ResetToDefaultSettings()
+    {
+        // Réinitialisation à l'arme par défaut
+        InitializeWeapon(0);
+        // Réinitialisation de la vitesse et des dégâts
+        ResetSpeedAndDamage();
     }
 
     public void TakeDamage(int damage)
@@ -189,150 +213,14 @@ public class PlayerController : MonoBehaviour
         // Vérifie si la santé du joueur est épuisée
         if (health.currentHealth <= 0)
         {
+            // ResetSpeedAndDamage(); // Réinitialise la vitesse et les dégâts avant de montrer le panneau de défaite
             GameManager.Instance.ShowDefeatPanel(); // Affichage du panneau de défaite
         }
     }
 
-    /*
-
-    private void SwitchGun()
+    private void OnApplicationQuit()
     {
-        currentGunIndex = (currentGunIndex + 1) % 3;
+        ResetSpeedAndDamage(); // S'assure que les valeurs par défaut sont rétablies à la fermeture de l'application
     }
 
-    private void FireGun1()
-    {
-        if (Time.time > lastFireTime + AssaultRifle.fireRate)
-        {
-            GameObject spotlight = Instantiate(spotlightPrefab, transform.position, Quaternion.identity);
-            Destroy(spotlight, 0.05f);
-            lastFireTime = Time.time;
-            Vector3 fireDirection = transform.forward;
-            int layerMask = ~(1 << LayerMask.NameToLayer("ZoneAttack"));
-            RaycastHit hitInfo;
-            if (Physics.Raycast(bulletSpawnPoint.position, fireDirection, out hitInfo, Mathf.Infinity, layerMask))
-            {
-                Debug.Log("Bullet hit: " + hitInfo.collider.gameObject.name);
-                Debug.DrawLine(bulletSpawnPoint.position, hitInfo.point, Color.green, 0.1f);
-                EnemyController enemy = hitInfo.collider.GetComponent<EnemyController>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(5);
-                    Debug.Log("HIT");
-                }
-                tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point
-            }
-            else
-            {
-                Vector3 endPoint = bulletSpawnPoint.position + fireDirection * 100f;
-                Debug.DrawLine(bulletSpawnPoint.position, endPoint, Color.red, 0.1f);
-                tracerEndPoint = endPoint; // Set tracer end point to the maximum range
-            }
-
-            // Instantiate a trail object
-            currentTrail = Instantiate(trailPrefab, bulletSpawnPoint.position, Quaternion.identity);
-            // Set the time the trail should be visible
-            currentTrail.time = trailTime;
-            // Set the starting position of the trail
-            currentTrail.transform.position = bulletSpawnPoint.position;
-            // Set the end position of the trail
-            currentTrail.AddPosition(tracerEndPoint);
-            // Destroy the trail after the specified time
-            Destroy(currentTrail.gameObject, 0.05f);
-        }
-    }
-
-
-    private void FireGun2()
-    {
-        Vector3 forwardDirection = transform.forward;
-        int layerMask = ~(1 << LayerMask.NameToLayer("ZoneAttack"));
-               
-        if (Time.time > lastFireTime + 0.99)
-        {
-            GameObject spotlight = Instantiate(spotlightPrefab, transform.position, Quaternion.identity);
-            Destroy(spotlight, 0.05f);
-            animator.SetBool("isShooting", true);
-            lastFireTime = Time.time;
-            for (int i = 0; i < 9; i++)
-            {
-                Vector3 randomDirection = Quaternion.Euler(0, Random.Range(-maxAngleDeviation, maxAngleDeviation), 0) * forwardDirection;
-                RaycastHit hitInfo;
-                if (Physics.Raycast(bulletSpawnPoint.position, randomDirection, out hitInfo, Mathf.Infinity, layerMask))
-                {
-                    Debug.Log("Bullet hit: " + hitInfo.collider.gameObject.name);
-                    Debug.DrawLine(bulletSpawnPoint.position, hitInfo.point, Color.green, 0.1f);
-                    EnemyController enemy = hitInfo.collider.GetComponent<EnemyController>();
-                    if (enemy != null)
-                    {
-                        enemy.TakeDamage(5);
-                        Debug.Log("HIT");
-                    }
-                    tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point
-                }
-                else
-                {
-                    Vector3 endPoint = bulletSpawnPoint.position + randomDirection * 100f;
-                    Debug.DrawLine(bulletSpawnPoint.position, endPoint, Color.red, 0.1f);
-                    tracerEndPoint = endPoint; // Set tracer end point to the maximum range
-                }
-
-                // Instantiate a trail object
-                currentTrail = Instantiate(trailPrefab, bulletSpawnPoint.position, Quaternion.identity);
-                // Set the time the trail should be visible
-                currentTrail.time = trailTime;
-                // Set the starting position of the trail
-                currentTrail.transform.position = bulletSpawnPoint.position;
-                // Set the end position of the trail
-                currentTrail.AddPosition(tracerEndPoint);
-                // Destroy the trail after the specified time
-                Destroy(currentTrail.gameObject, 0.05f);
-            }
-        }
-    }
-
-    private void FireGun3()
-    {
-        if (Time.time > lastFireTime + 1)
-        {
-            GameObject spotlight = Instantiate(spotlightPrefab, transform.position, Quaternion.identity);
-            Destroy(spotlight, 0.05f);
-            lastFireTime = Time.time;
-            Vector3 fireDirection = transform.forward;
-            int layerMask = ~(1 << LayerMask.NameToLayer("ZoneAttack"));
-            RaycastHit hitInfo;
-            if (Physics.Raycast(bulletSpawnPoint.position, fireDirection, out hitInfo, Mathf.Infinity, layerMask))
-            {
-                Debug.Log("Bullet hit: " + hitInfo.collider.gameObject.name);
-                Debug.DrawLine(bulletSpawnPoint.position, hitInfo.point, Color.green, 0.1f);
-                EnemyController enemy = hitInfo.collider.GetComponent<EnemyController>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(10);
-                    Debug.Log("HIT");
-                }
-                tracerEndPoint = hitInfo.point; // Set tracer end point to the hit point
-            }
-            else
-            {
-                Vector3 endPoint = bulletSpawnPoint.position + fireDirection * 100f;
-                Debug.DrawLine(bulletSpawnPoint.position, endPoint, Color.red, 0.1f);
-                tracerEndPoint = endPoint; // Set tracer end point to the maximum range
-            }
-
-            // Instantiate a trail object
-            currentTrail = Instantiate(trailPrefab, bulletSpawnPoint.position, Quaternion.identity);
-            // Set the time the trail should be visible
-            currentTrail.time = trailTime;
-            // Set the starting position of the trail
-            currentTrail.transform.position = bulletSpawnPoint.position;
-            // Set the end position of the trail
-            currentTrail.AddPosition(tracerEndPoint);
-            // Destroy the trail after the specified time
-            Destroy(currentTrail.gameObject, 0.05f);
-        }
-
-    }
-
-    */
 }

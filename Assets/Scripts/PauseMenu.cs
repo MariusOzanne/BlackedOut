@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -25,6 +24,12 @@ public class PauseMenu : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
+        RageManager rageManager = FindObjectOfType<RageManager>();
+        if (rageManager != null)
+        {
+            rageManager.ResetRageEffects();
+        }
+
         FindObjectOfType<SaveSystem>().SaveData();
         sceneLoader.LoadSceneAsync(0);
     }

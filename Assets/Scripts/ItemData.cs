@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Définit un menu pour créer facilement des données d'objet dans l'éditeur Unity
-[CreateAssetMenu(fileName = "Item", menuName = "Items/New Item")]
 public class ItemData : ScriptableObject
 {
     [Header("Data")]

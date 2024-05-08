@@ -6,6 +6,8 @@ using UnityEngine.Audio;
 
 public class OptionsMenu : MonoBehaviour
 {
+    [SerializeField] private Button clearSavedDataButton;
+
     [SerializeField] private Dropdown qualitiesDropdown;
     [SerializeField] private Dropdown resolutionsDropdown;
 
@@ -15,6 +17,9 @@ public class OptionsMenu : MonoBehaviour
 
     private void Start()
     {
+        // Initialisation du bouton de suppression des données
+        clearSavedDataButton.interactable = System.IO.File.Exists(Application.persistentDataPath + "/SavedData.json");
+
         // Initialisation du slider de volume
         audioMixer.GetFloat("Volume", out float soundValueForSlider);
         soundSlider.value = soundValueForSlider;
@@ -87,10 +92,17 @@ public class OptionsMenu : MonoBehaviour
     public void ClearSavedData()
     {
         System.IO.File.Delete(Application.persistentDataPath + "/SavedData.json");
+        clearSavedDataButton.interactable = false;
 
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ResetScoresToDefault();
+        }
+
+        PlayerController playerController = FindObjectOfType<PlayerController>();
+        if (playerController != null)
+        {
+            playerController.ResetToDefaultSettings();
         }
     }
 }

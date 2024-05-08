@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Définit un menu pour créer facilement des données d'ennemi dans l'éditeur Unity
-[CreateAssetMenu(fileName = "Enemy", menuName = "Enemies/New Enemy")]
 public class EnemyData : ScriptableObject
 {
     [Header("Data")]

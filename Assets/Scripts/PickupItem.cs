@@ -57,6 +57,7 @@ public class PickupItem : MonoBehaviour
         PlayerController player = FindObjectOfType<PlayerController>();
         Health health = player.GetComponent<Health>();
         Shield shield = player.GetComponent<Shield>();
+        RageManager rageManager = player.GetComponent<RageManager>();
 
         // Applique l'effet basé sur le nom de l'objet
         switch (itemData.name)
@@ -68,7 +69,7 @@ public class PickupItem : MonoBehaviour
                 shield.AddShield(itemData.shieldAmount); // Ajoute un bouclier
                 break;
             case "Rage":
-                GameManager.Instance.ActivateRageMode(itemData); // Active le mode rage
+                rageManager.ActivateRageMode(itemData); // Active le mode rage
                 break;
         }
     }

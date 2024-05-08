@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class SaveSystem : MonoBehaviour
 {
+    [SerializeField] private PlayerController playerController;
+
     public void SaveData()
     {
         SavedData savedData = new SavedData
         {
             coins = GameManager.Instance.coins,
-            score = GameManager.Instance.score
+            score = GameManager.Instance.score,
+            currentWeaponIndex = playerController.currentWeaponIndex
         };
 
         string jsonData = JsonUtility.ToJson(savedData);
@@ -26,11 +29,13 @@ public class SaveSystem : MonoBehaviour
         if (System.IO.File.Exists(filePath))
         {
             string jsonData = System.IO.File.ReadAllText(filePath);
+
             SavedData savedData = JsonUtility.FromJson<SavedData>(jsonData);
 
             // Chargement des données
             GameManager.Instance.coins = savedData.coins;
             GameManager.Instance.score = savedData.score;
+            playerController.InitializeWeapon(savedData.currentWeaponIndex);
 
             Debug.Log("Chargement terminé");
         }
@@ -41,4 +46,5 @@ public class SavedData
 {
     public int coins;
     public int score;
+    public int currentWeaponIndex;
 }
